@@ -1,0 +1,23 @@
+<!--
+  Layout principal: Componente padre con hijos
+  Estructura: Header (Navbar) + Sidebar + Vista Central (router-outlet) + Footer
+-->
+<div class="app-layout">
+  <!-- Componente hijo: Header / Navegación -->
+  <app-navbar></app-navbar>
+
+  <div class="layout-body">
+    <!-- Componente hijo: Sidebar / Menú lateral -->
+    <app-sidebar></app-sidebar>
+
+    <!-- Vista central: contenido dinámico según la ruta -->
+    <main class="main-content">
+      <router-outlet />
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>Editor de Procesos &copy; 2026 - Grupo 1</p>
+  </footer>
+</div>
