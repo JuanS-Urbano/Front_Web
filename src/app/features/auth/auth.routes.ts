@@ -1,8 +1,7 @@
 import { Routes } from '@angular/router';
 
-/** Rutas del módulo de autenticación (públicas, sin AuthGuard). */
 export const AUTH_ROUTES: Routes = [
-  { path: 'login', loadComponent: () => import('./login/login.component').then(m => m.LoginComponent) },
-  { path: 'registro', loadComponent: () => import('./registro-empresa/registro-empresa.component').then(m => m.RegistroEmpresaComponent) },
+  { path: 'login', loadComponent: () => import('./login/login').then(m => m.Login) },
+  { path: 'registro', loadComponent: () => import('./registro-empresa/registro-empresa').then(m => m.RegistroEmpresa) },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];

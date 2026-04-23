@@ -1,0 +1,12 @@
+@if (visible) {
+  <div class="dialog-overlay">
+    <div class="dialog-content">
+      <h3>{{ titulo }}</h3>
+      <p>{{ mensaje }}</p>
+      <div class="dialog-actions">
+        <button (click)="onCancelar()">Cancelar</button>
+        <button (click)="onConfirmar()" class="btn-danger">Confirmar</button>
+      </div>
+    </div>
+  </div>
+}

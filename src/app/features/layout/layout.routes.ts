@@ -1,16 +1,11 @@
 import { Routes } from '@angular/router';
 
-/**
- * Rutas del Layout principal.
- * Todas las rutas hijas se renderizan dentro del AppLayoutComponent
- * que contiene: Header (navbar) + Sidebar + Vista Central (router-outlet) + Footer.
- */
 export const LAYOUT_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () => import('./app-layout/app-layout.component').then(m => m.AppLayoutComponent),
+    loadComponent: () => import('./app-layout/app-layout').then(m => m.AppLayout),
     children: [
-      { path: 'dashboard', loadComponent: () => import('../dashboard/dashboard.component').then(m => m.DashboardComponent) },
+      { path: 'dashboard', loadComponent: () => import('../dashboard/dashboard').then(m => m.Dashboard) },
       { path: 'usuarios', loadChildren: () => import('../usuarios/usuarios.routes').then(m => m.USUARIOS_ROUTES) },
       { path: 'procesos', loadChildren: () => import('../procesos/procesos.routes').then(m => m.PROCESOS_ROUTES) },
       { path: 'editor/:procesoId', loadChildren: () => import('../editor/editor.routes').then(m => m.EDITOR_ROUTES) },

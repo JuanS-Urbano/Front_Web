@@ -1,18 +1,9 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { SessionService } from '../services/session.service';
+import { Session } from '../services/session';
 
-/**
- * Guard de roles.
- *
- * Restringe acceso según el rol del usuario (ADMIN, EDITOR, LECTOR).
- * Se usa en las rutas que requieren un rol específico.
- *
- * Ejemplo de uso en rutas:
- * { path: 'admin', canActivate: [roleGuard], data: { roles: ['ADMIN'] } }
- */
 export const roleGuard: CanActivateFn = (route, state) => {
-  const sessionService = inject(SessionService);
+  const sessionService = inject(Session);
   const router = inject(Router);
 
   const requiredRoles = route.data?.['roles'] as string[] | undefined;
@@ -26,7 +17,6 @@ export const roleGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // TODO: redirigir a página de "Sin permisos" o mostrar mensaje 403
   router.navigate(['/dashboard']);
   return false;
 };

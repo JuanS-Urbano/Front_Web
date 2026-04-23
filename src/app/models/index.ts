@@ -1,20 +1,19 @@
-/**
- * Barrel export de todos los modelos/interfaces.
- * Permite importar así: import { Proceso, Actividad, ... } from '../models';
- */
-export * from './api-response.model';
-export * from './auth.model';
-export * from './empresa.model';
-export * from './usuario.model';
-export * from './proceso.model';
-export * from './pool.model';
-export * from './actividad.model';
-export * from './arco.model';
-export * from './gateway.model';
-export * from './lane.model';
-export * from './rol-proceso.model';
-export * from './historial-cambios.model';
-export * from './mensaje.model';
-export * from './notificacion.model';
-export * from './correlacion-result.model';
-export * from './referencia.model';
+export type { ApiResponse } from './api-response';
+export type { AuthRequest } from './auth-request';
+export type { AuthResponse } from './auth-response';
+export type { Empresa } from './empresa';
+export type { Usuario } from './usuario';
+export type { UsuarioCreate } from './usuario-create';
+export type { Proceso } from './proceso';
+export type { Pool } from './pool';
+export type { Actividad } from './actividad';
+export type { Arco } from './arco';
+export type { Gateway } from './gateway';
+export type { Lane } from './lane';
+export type { RolProceso } from './rol-proceso';
+export type { HistorialCambios } from './historial-cambios';
+export type { Mensaje } from './mensaje';
+export type { NotificacionRequest } from './notificacion-request';
+export type { NotificacionResponse } from './notificacion-response';
+export type { CorrelacionResult } from './correlacion-result';
+export type { Referencia } from './referencia';
