@@ -1,1 +1,54 @@
-<p>usuarios-list works!</p>
+<div class="usuarios-list">
+  <div class="page-header">
+    <h2>Gestión de Usuarios</h2>
+    <a routerLink="crear" class="btn-add">+ Nuevo Usuario</a>
+  </div>
+
+  @if (loading) {
+    <div class="loading">Cargando usuarios...</div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (!loading && usuarios.length === 0 && !errorMessage) {
+    <div class="empty-state">
+      <span class="empty-icon">👥</span>
+      <p>No hay usuarios registrados en esta empresa</p>
+    </div>
+  }
+
+  @if (!loading && usuarios.length > 0) {
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Empresa</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (usuario of usuarios; track usuario.id) {
+          <tr>
+            <td>{{ usuario.id }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>
+              <span class="badge" [class]="'badge-' + usuario.rolSistema.toLowerCase()">
+                {{ usuario.rolSistema }}
+              </span>
+            </td>
+            <td>
+              <span [class]="usuario.isActivo ? 'status-active' : 'status-inactive'">
+                {{ usuario.isActivo ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td>{{ usuario.empresa.nombre }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

@@ -1,1 +1,12 @@
-<p>navbar works!</p>
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="brand-icon">⚙️</span>
+    <span class="brand-text">Editor de Procesos</span>
+  </div>
+  <div class="navbar-info">
+    <span class="user-empresa">{{ empresaNombre }}</span>
+    <span class="user-role">{{ userRole }}</span>
+    <span class="user-email">{{ userEmail }}</span>
+    <button class="btn-logout" (click)="onLogout()">Cerrar sesión</button>
+  </div>
+</nav>

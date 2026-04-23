@@ -1,7 +1,9 @@
+import { Referencia } from './referencia';
+
 export interface Usuario {
   id: number;
   email: string;
-  nombre: string;
-  rol: string;
-  empresaId: number;
+  rolSistema: string;
+  isActivo: boolean;
+  empresa: Referencia;
 }

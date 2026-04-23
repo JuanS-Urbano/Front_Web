@@ -1,2 +1,33 @@
-<h1>Bienvenido, {{ nombreUsuario }}</h1>
-<p>Empresa activa: {{ nombreEmpresa }}</p>
+<div class="dashboard">
+  <div class="welcome-card">
+    <h1>👋 Bienvenido</h1>
+    <p class="welcome-email">{{ userEmail }}</p>
+    <div class="welcome-meta">
+      <span class="badge badge-empresa">{{ empresaNombre }}</span>
+      <span class="badge badge-role">{{ userRole }}</span>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="stat-card">
+      <span class="stat-icon">📋</span>
+      <h3>Procesos</h3>
+      <p>Gestiona los procesos de tu empresa</p>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">👥</span>
+      <h3>Usuarios</h3>
+      <p>Administra los usuarios del sistema</p>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">🔑</span>
+      <h3>Roles</h3>
+      <p>Configura roles y permisos</p>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">✉️</span>
+      <h3>Mensajería</h3>
+      <p>Gestiona mensajes entre procesos</p>
+    </div>
+  </div>
+</div>

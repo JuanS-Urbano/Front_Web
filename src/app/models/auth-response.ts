@@ -1,7 +1,9 @@
+import { Referencia } from './referencia';
+
 export interface AuthResponse {
   token: string;
+  usuario: Referencia;
   email: string;
-  rol: string;
-  empresaId: number;
-  nombreEmpresa: string;
+  rolSistema: string;
+  empresa: Referencia;
 }

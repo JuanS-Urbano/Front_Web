@@ -5,7 +5,6 @@ import { environment } from '../environments/environment';
 import { ApiResponse } from '../models/api-response';
 import { AuthRequest } from '../models/auth-request';
 import { AuthResponse } from '../models/auth-response';
-import { Empresa } from '../models/empresa';
 
 @Injectable({
   providedIn: 'root',
@@ -16,11 +15,8 @@ export class Auth {
 
   constructor(private http: HttpClient) {}
 
+  // POST /api/v1/auth/login → ApiResponse<AuthResponseDTO>
   login(request: AuthRequest): Observable<ApiResponse<AuthResponse>> {
     return this.http.post<ApiResponse<AuthResponse>>(`${this.baseUrl}/login`, request);
-  }
-
-  registrarEmpresa(empresa: Empresa): Observable<ApiResponse<Empresa>> {
-    return this.http.post<ApiResponse<Empresa>>(`${this.baseUrl}/registro`, empresa);
   }
 }

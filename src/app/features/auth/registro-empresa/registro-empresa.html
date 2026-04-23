@@ -1,1 +1,75 @@
-<p>registro-empresa works!</p>
+<div class="registro-container">
+  <div class="registro-card">
+    <h1>Registrar Empresa</h1>
+    <p class="subtitle">Crea una nueva empresa en el sistema</p>
+
+    @if (errorMessage) {
+      <div class="alert alert-error">{{ errorMessage }}</div>
+    }
+    @if (successMessage) {
+      <div class="alert alert-success">{{ successMessage }}</div>
+    }
+
+    <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nit">NIT</label>
+        <input
+          id="nit"
+          type="text"
+          formControlName="nit"
+          placeholder="900123456-1"
+          [class.input-error]="registroForm.get('nit')?.invalid && registroForm.get('nit')?.touched"
+        />
+        @if (registroForm.get('nit')?.hasError('required') && registroForm.get('nit')?.touched) {
+          <small class="error-text">El NIT es obligatorio</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="nombre">Nombre de la empresa</label>
+        <input
+          id="nombre"
+          type="text"
+          formControlName="nombre"
+          placeholder="Mi Empresa S.A.S."
+          [class.input-error]="registroForm.get('nombre')?.invalid && registroForm.get('nombre')?.touched"
+        />
+        @if (registroForm.get('nombre')?.hasError('required') && registroForm.get('nombre')?.touched) {
+          <small class="error-text">El nombre es obligatorio</small>
+        }
+        @if (registroForm.get('nombre')?.hasError('minlength') && registroForm.get('nombre')?.touched) {
+          <small class="error-text">Mínimo 3 caracteres</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="correoContacto">Correo de contacto</label>
+        <input
+          id="correoContacto"
+          type="email"
+          formControlName="correoContacto"
+          placeholder="contacto@empresa.com"
+          [class.input-error]="registroForm.get('correoContacto')?.invalid && registroForm.get('correoContacto')?.touched"
+        />
+        @if (registroForm.get('correoContacto')?.hasError('required') && registroForm.get('correoContacto')?.touched) {
+          <small class="error-text">El correo es obligatorio</small>
+        }
+        @if (registroForm.get('correoContacto')?.hasError('email') && registroForm.get('correoContacto')?.touched) {
+          <small class="error-text">Ingrese un correo válido</small>
+        }
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        @if (loading) {
+          Registrando...
+        } @else {
+          Registrar Empresa
+        }
+      </button>
+    </form>
+
+    <p class="link-text">
+      ¿Ya tienes cuenta? <a routerLink="/auth/login">Iniciar sesión</a>
+    </p>
+  </div>
+</div>

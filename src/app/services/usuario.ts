@@ -15,19 +15,18 @@ export class Usuario {
 
   constructor(private http: HttpClient) {}
 
-  getUsuarios(empresaId: number): Observable<ApiResponse<UsuarioModel[]>> {
-    return this.http.get<ApiResponse<UsuarioModel[]>>(`${this.baseUrl}?empresaId=${empresaId}`);
-  }
-
+  // POST /api/v1/usuarios → ApiResponse<UsuarioDTO>
   crearUsuario(usuario: UsuarioCreate): Observable<ApiResponse<UsuarioModel>> {
     return this.http.post<ApiResponse<UsuarioModel>>(this.baseUrl, usuario);
   }
 
-  updateUsuario(id: number, usuario: Partial<UsuarioModel>): Observable<ApiResponse<UsuarioModel>> {
-    return this.http.put<ApiResponse<UsuarioModel>>(`${this.baseUrl}/${id}`, usuario);
+  // GET /api/v1/usuarios/empresa/{empresaId} → ApiResponse<List<UsuarioDTO>>
+  getUsuariosPorEmpresa(empresaId: number): Observable<ApiResponse<UsuarioModel[]>> {
+    return this.http.get<ApiResponse<UsuarioModel[]>>(`${this.baseUrl}/empresa/${empresaId}`);
   }
 
-  deleteUsuario(id: number): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
+  // PUT /api/v1/usuarios/{id}/rol?nuevoRol=EDITOR → ApiResponse<UsuarioDTO>
+  cambiarRol(id: number, nuevoRol: string): Observable<ApiResponse<UsuarioModel>> {
+    return this.http.put<ApiResponse<UsuarioModel>>(`${this.baseUrl}/${id}/rol?nuevoRol=${nuevoRol}`, {});
   }
 }

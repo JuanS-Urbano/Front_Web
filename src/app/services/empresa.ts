@@ -14,11 +14,13 @@ export class Empresa {
 
   constructor(private http: HttpClient) {}
 
-  getEmpresa(id: number): Observable<ApiResponse<EmpresaModel>> {
-    return this.http.get<ApiResponse<EmpresaModel>>(`${this.baseUrl}/${id}`);
+  // POST /api/v1/empresas → ApiResponse<EmpresaDTO>
+  crearEmpresa(empresa: EmpresaModel): Observable<ApiResponse<EmpresaModel>> {
+    return this.http.post<ApiResponse<EmpresaModel>>(this.baseUrl, empresa);
   }
 
-  updateEmpresa(id: number, empresa: EmpresaModel): Observable<ApiResponse<EmpresaModel>> {
-    return this.http.put<ApiResponse<EmpresaModel>>(`${this.baseUrl}/${id}`, empresa);
+  // GET /api/v1/empresas → ApiResponse<List<EmpresaDTO>>
+  listarEmpresas(): Observable<ApiResponse<EmpresaModel[]>> {
+    return this.http.get<ApiResponse<EmpresaModel[]>>(this.baseUrl);
   }
 }

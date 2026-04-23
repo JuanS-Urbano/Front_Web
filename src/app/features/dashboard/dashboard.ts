@@ -9,16 +9,19 @@ import { Session } from '../../core/services/session';
 })
 export class Dashboard implements OnInit {
 
-  nombreUsuario = '';
-  nombreEmpresa = '';
+  userEmail = '';
+  empresaNombre = '';
+  userRole = '';
 
   constructor(private sessionService: Session) {}
 
   ngOnInit(): void {
+    // Suscripción al BehaviorSubject de SessionService
     this.sessionService.session$.subscribe((session) => {
       if (session) {
-        this.nombreUsuario = session.email;
-        this.nombreEmpresa = session.nombreEmpresa;
+        this.userEmail = session.email;
+        this.empresaNombre = session.empresa?.nombre ?? '';
+        this.userRole = session.rolSistema;
       }
     });
   }

@@ -1,0 +1,52 @@
+.usuarios-list { padding: 1.5rem; }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.page-header h2 { margin: 0; color: #1e3a5f; }
+
+.btn-add {
+  background: #2563eb; color: #fff; padding: 0.5rem 1.15rem;
+  border-radius: 8px; text-decoration: none; font-weight: 600;
+  font-size: 0.9rem; transition: background 0.2s;
+}
+.btn-add:hover { background: #1d4ed8; }
+
+.loading { text-align: center; padding: 3rem; color: #6b7280; }
+
+.alert { padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; }
+.alert-error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+.empty-state { text-align: center; padding: 3rem; color: #6b7280; }
+.empty-icon { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+
+.data-table {
+  width: 100%; border-collapse: collapse;
+  background: #fff; border-radius: 8px; overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.data-table thead { background: #f1f5f9; }
+.data-table th {
+  text-align: left; padding: 0.75rem 1rem;
+  font-size: 0.8rem; color: #64748b; text-transform: uppercase;
+  font-weight: 600; letter-spacing: 0.03em;
+}
+.data-table td { padding: 0.75rem 1rem; border-top: 1px solid #f1f5f9; font-size: 0.9rem; }
+.data-table tbody tr:hover { background: #f8fafc; }
+
+.badge {
+  padding: 0.2rem 0.55rem; border-radius: 4px;
+  font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+}
+.badge-admin_plataforma { background: #fef3c7; color: #92400e; }
+.badge-admin_empresa { background: #dbeafe; color: #1e40af; }
+.badge-editor { background: #d1fae5; color: #065f46; }
+.badge-lector { background: #f3f4f6; color: #374151; }
+
+.status-active { color: #16a34a; font-weight: 600; }
+.status-inactive { color: #dc2626; font-weight: 600; }
