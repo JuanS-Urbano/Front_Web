@@ -11,7 +11,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: front-proyecto
-  namespace: front-proyecto
+  namespace: grupo23
   labels:
     app: front-proyecto
 spec:
@@ -63,7 +63,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: front-proyecto
-  namespace: front-proyecto
+  namespace: grupo23
   labels:
     app: front-proyecto
 spec:
@@ -84,7 +84,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: front-proyecto
-  namespace: front-proyecto
+  namespace: grupo23
   labels:
     app: front-proyecto
   annotations:
@@ -92,7 +92,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: front-proyecto.inphotech.co
+    - host: grupo23.inphotech.co
       http:
         paths:
           - path: /

@@ -8,7 +8,7 @@ on:
 env:
   IMAGE_NAME: ghcr.io/juans-urbano/front_web
   DEPLOYMENT_NAME: front-proyecto
-  DEPLOY_NAMESPACE: front-proyecto
+  DEPLOY_NAMESPACE: grupo23
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
@@ -62,49 +62,34 @@ jobs:
   # ============================================================
   deploy:
     name: Deploy to Kubernetes
-    runs-on: ubuntu-latest
+    runs-on: main
     needs: build-push
 
     steps:
       - name: Checkout codigo fuente
         uses: actions/checkout@v4
 
-      - name: Configurar kubectl
-        uses: azure/setup-kubectl@v4
-        with:
-          version: 'latest'
-
-      - name: Escribir kubeconfig desde secret
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
-          chmod 600 $HOME/.kube/config
-
       - name: Crear Namespace y Secret (si no existen)
         run: |
           # Crear Namespace si no existe
-          kubectl create namespace ${{ env.DEPLOY_NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+          sudo microk8s kubectl create namespace ${{ env.DEPLOY_NAMESPACE }} --dry-run=client -o yaml | sudo microk8s kubectl apply -f -
           
           # Crear o actualizar Secret para descargar imágenes de GHCR
-          kubectl create secret docker-registry ghcr-secret \
+          sudo microk8s kubectl create secret docker-registry ghcr-secret \
             --namespace=${{ env.DEPLOY_NAMESPACE }} \
             --docker-server=ghcr.io \
             --docker-username=${{ github.actor }} \
             --docker-password=${{ secrets.GHCR_PAT }} \
             --docker-email=${{ github.actor }}@users.noreply.github.com \
-            --dry-run=client -o yaml | kubectl apply -f -
+            --dry-run=client -o yaml | sudo microk8s kubectl apply -f -
 
       - name: Aplicar manifiestos de Kubernetes
-        run: kubectl apply -f k8s/deployment.yaml
+        run: sudo microk8s kubectl apply -f k8s/deployment.yaml
 
       - name: Forzar rollout para actualizar imagen :latest
         run: |
-          kubectl rollout restart deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.DEPLOY_NAMESPACE }}
+          sudo microk8s kubectl rollout restart deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.DEPLOY_NAMESPACE }}
 
       - name: Verificar estado del rollout
         run: |
-          kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.DEPLOY_NAMESPACE }} --timeout=120s
-
-      - name: Limpiar kubeconfig del runner
-        if: always()
-        run: rm -f $HOME/.kube/config
+          sudo microk8s kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.DEPLOY_NAMESPACE }} --timeout=120s
