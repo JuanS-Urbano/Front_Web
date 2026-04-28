@@ -8,13 +8,13 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build:prod
+RUN npm run build
 
 # ====================
 
 FROM nginx:stable
 
-COPY --from=build /app/dist/front-proyecto/browser /usr/share/nginx/html
+COPY --from=build /app/dist/Front-proyecto/browser /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
