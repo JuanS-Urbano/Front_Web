@@ -1,1 +1,19 @@
-<p>propiedades-arco works!</p>
+@if (arco) {
+<div class="panel-container">
+  <div class="panel-header">
+    <h3>↗️ Propiedades Arco</h3>
+  </div>
+  
+  <form [formGroup]="propiedadesForm" class="panel-form">
+    <div class="form-group">
+      <label for="arc-etiqueta">Etiqueta (Opcional)</label>
+      <input id="arc-etiqueta" type="text" formControlName="etiqueta" placeholder="Ej. Sí, No, > 100" />
+    </div>
+
+    <div class="info-group">
+      <small><strong>Origen ID:</strong> {{ arco?.origenId }}</small>
+      <small><strong>Destino ID:</strong> {{ arco?.destinoId }}</small>
+    </div>
+  </form>
+</div>
+}

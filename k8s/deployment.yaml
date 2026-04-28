@@ -1,0 +1,110 @@
+# ============================================================
+# INSTRUCCIONES: Reemplazar los placeholders antes de aplicar:
+#   <namespace>  -> namespace de Kubernetes (ej: frontend-prod)
+#   <nombre>     -> nombre base para los recursos (ej: front-proyecto)
+# ============================================================
+
+# ============================================================
+# RECURSO 1: Deployment
+# ============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-proyecto
+  namespace: grupo23
+  labels:
+    app: front-proyecto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-proyecto
+  template:
+    metadata:
+      labels:
+        app: front-proyecto
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: front-proyecto
+          image: ghcr.io/juans-urbano/front_web:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
+
+---
+# ============================================================
+# RECURSO 2: Service (ClusterIP)
+# ============================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-proyecto
+  namespace: grupo23
+  labels:
+    app: front-proyecto
+spec:
+  type: ClusterIP
+  selector:
+    app: front-proyecto
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+
+---
+# ============================================================
+# RECURSO 3: Ingress
+# ============================================================
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: front-proyecto
+  namespace: grupo23
+  labels:
+    app: front-proyecto
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: grupo23.inphotech.co
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: front-proyecto
+                port:
+                  number: 80
+  # Descomentar para habilitar TLS con cert-manager:
+  # tls:
+  #   - hosts:
+  #       - front-proyecto.inphotech.co
+  #     secretName: front-proyecto-tls
+

@@ -1,1 +1,9 @@
-<p>search-bar works!</p>
+<div class="search-container">
+  <span class="search-icon">🔍</span>
+  <input 
+    type="text" 
+    class="search-input" 
+    placeholder="Buscar..." 
+    (input)="onSearch($event)"
+  />
+</div>

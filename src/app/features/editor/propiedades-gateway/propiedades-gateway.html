@@ -1,1 +1,23 @@
-<p>propiedades-gateway works!</p>
+@if (gateway) {
+<div class="panel-container">
+  <div class="panel-header">
+    <h3>🔶 Propiedades Gateway</h3>
+  </div>
+  
+  <form [formGroup]="propiedadesForm" class="panel-form">
+    <div class="form-group">
+      <label for="gat-nombre">Nombre</label>
+      <input id="gat-nombre" type="text" formControlName="nombre" />
+    </div>
+
+    <div class="form-group">
+      <label for="gat-tipo">Tipo de Gateway</label>
+      <select id="gat-tipo" formControlName="tipo">
+        <option value="Exclusivo">Exclusivo (XOR)</option>
+        <option value="Paralelo">Paralelo (AND)</option>
+        <option value="Inclusivo">Inclusivo (OR)</option>
+      </select>
+    </div>
+  </form>
+</div>
+}

@@ -1,1 +1,50 @@
-<p>lanes-manager works!</p>
+<div class="lanes-manager-container">
+  <div class="manager-header">
+    <h3>🏊‍♂️ Gestión de Carriles (Lanes)</h3>
+    @if (procesoId) {
+      <a [routerLink]="['/lanes/crear']" [queryParams]="{ procesoId: procesoId }" class="btn-add-sm">+ Nuevo Carril</a>
+    }
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (loading) {
+    <app-loading-spinner mensaje="Cargando carriles..."></app-loading-spinner>
+  }
+
+  @if (!loading && lanes.length === 0) {
+    <div class="empty-state">
+      <p>No hay carriles en este proceso.</p>
+    </div>
+  }
+
+  @if (!loading && lanes.length > 0) {
+    <ul class="lanes-list">
+      @for (lane of lanes; track lane.id) {
+        <li class="lane-item">
+          <div class="lane-info">
+            <span class="lane-orden">#{{ lane.orden }}</span>
+            <div>
+              <div class="lane-nombre">{{ lane.nombre }}</div>
+              <div class="lane-rol">Rol ID: {{ lane.rolProcesoId }}</div>
+            </div>
+          </div>
+          <div class="lane-actions">
+            <a [routerLink]="['/lanes', lane.id, 'editar']" [queryParams]="{ procesoId: procesoId }" class="btn-icon">✏️</a>
+            <button (click)="prepararEliminacion(lane.id)" class="btn-icon btn-danger-text">🗑️</button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+
+  <app-confirm-dialog
+    [visible]="mostrarConfirmacion"
+    titulo="Eliminar Carril"
+    mensaje="¿Estás seguro? Las actividades en este carril quedarán huérfanas."
+    (confirmar)="confirmarEliminacion()"
+    (cancelar)="cancelarEliminacion()">
+  </app-confirm-dialog>
+</div>

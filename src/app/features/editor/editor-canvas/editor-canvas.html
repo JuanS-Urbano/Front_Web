@@ -1,1 +1,82 @@
-<p>editor-canvas works!</p>
+<div class="canvas-container" #canvasBoundary (click)="clearSelection()">
+  
+  <!-- Lanes Layer (Background) -->
+  <div class="lanes-layer">
+    @for (lane of lanes; track lane.id) {
+      <div class="canvas-lane" [style.height.px]="150">
+        <div class="lane-header">
+          <span class="lane-name">{{ lane.nombre }}</span>
+        </div>
+      </div>
+    }
+  </div>
+  <!-- SVG Layer for drawing connections (Arcos) -->
+  <svg class="canvas-svg">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+      </marker>
+    </defs>
+    
+    @for (arco of arcos; track arco.id) {
+      <path
+        [attr.d]="getArcoPath(arco)"
+        class="arco-line"
+        marker-end="url(#arrow)"
+      />
+      <!-- Optional label -->
+      @if (arco.etiqueta) {
+        <text 
+          [attr.x]="(getNodeCenter(arco.origenId)?.x! + getNodeCenter(arco.destinoId)?.x!) / 2" 
+          [attr.y]="(getNodeCenter(arco.origenId)?.y! + getNodeCenter(arco.destinoId)?.y!) / 2 - 10"
+          class="arco-label">
+          {{ arco.etiqueta }}
+        </text>
+      }
+    }
+  </svg>
+
+  <!-- HTML Layer for draggable nodes -->
+  <div class="nodes-layer">
+    
+    <!-- Actividades -->
+    @for (act of actividades; track act.id) {
+      <div 
+        class="node actividad" 
+        [class.selected]="selectedElementId === 'act-' + act.id"
+        [style.left.px]="act.posicionX" 
+        [style.top.px]="act.posicionY"
+        cdkDrag 
+        cdkDragBoundary=".canvas-container"
+        (cdkDragEnded)="onDragEnd($event, act)"
+        (click)="selectActividad(act, $event)">
+        <div class="node-content">
+          <span class="icon">⚙️</span>
+          <span class="label">{{ act.nombre }}</span>
+        </div>
+      </div>
+    }
+
+    <!-- Gateways -->
+    @for (gat of gateways; track gat.id) {
+      <div 
+        class="node gateway" 
+        [class.selected]="selectedElementId === 'gat-' + gat.id"
+        [style.left.px]="gat.posicionX" 
+        [style.top.px]="gat.posicionY"
+        cdkDrag 
+        cdkDragBoundary=".canvas-container"
+        (cdkDragEnded)="onDragEnd($event, gat)"
+        (click)="selectGateway(gat, $event)">
+        <div class="gateway-diamond"></div>
+        <div class="gateway-icon">
+          @if (gat.tipo === 'Exclusivo') { <span>×</span> }
+          @if (gat.tipo === 'Paralelo') { <span>+</span> }
+          @if (gat.tipo === 'Inclusivo') { <span>○</span> }
+        </div>
+        <div class="gateway-label">{{ gat.nombre }}</div>
+      </div>
+    }
+
+  </div>
+</div>

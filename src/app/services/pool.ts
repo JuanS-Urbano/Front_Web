@@ -9,13 +9,12 @@ import { Pool as PoolModel } from '../models/pool';
   providedIn: 'root',
 })
 export class Pool {
-
   private baseUrl = `${environment.apiUrl}/pools`;
 
   constructor(private http: HttpClient) {}
 
-  getPool(empresaId: number): Observable<ApiResponse<PoolModel>> {
-    return this.http.get<ApiResponse<PoolModel>>(`${this.baseUrl}?empresaId=${empresaId}`);
+  getPoolById(id: number): Observable<ApiResponse<PoolModel>> {
+    return this.http.get<ApiResponse<PoolModel>>(`${this.baseUrl}/${id}`);
   }
 
   updatePool(id: number, pool: Partial<PoolModel>): Observable<ApiResponse<PoolModel>> {

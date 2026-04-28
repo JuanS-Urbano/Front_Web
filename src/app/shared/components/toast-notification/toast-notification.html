@@ -1,5 +1,14 @@
 @if (visible) {
-  <div class="toast" [class]="'toast-' + tipo">
-    <p>{{ mensaje }}</p>
+  <div class="toast-container" [class]="'toast-' + tipo">
+    <div class="toast-icon">
+      @switch (tipo) {
+        @case ('success') { <span>✅</span> }
+        @case ('error') { <span>❌</span> }
+        @case ('info') { <span>ℹ️</span> }
+      }
+    </div>
+    <div class="toast-message">
+      {{ mensaje }}
+    </div>
   </div>
 }

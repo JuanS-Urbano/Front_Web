@@ -1,1 +1,55 @@
-<p>lane-form works!</p>
+<div class="lane-form-container">
+  <div class="form-card">
+    <div class="card-header">
+      <h2>{{ isEditMode ? 'Editar Carril (Lane)' : 'Crear Nuevo Carril' }}</h2>
+      <a [routerLink]="['/lanes']" [queryParams]="{ procesoId: procesoId }" class="btn-close">✕</a>
+    </div>
+
+    @if (errorMessage) {
+      <div class="alert alert-error">{{ errorMessage }}</div>
+    }
+
+    <form [formGroup]="laneForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-group">
+        <label for="nombre">Nombre del Carril</label>
+        <input id="nombre" type="text" formControlName="nombre" placeholder="Ej. Área de Finanzas"
+          [class.input-error]="laneForm.get('nombre')?.invalid && laneForm.get('nombre')?.touched" />
+        @if (laneForm.get('nombre')?.hasError('required') && laneForm.get('nombre')?.touched) {
+          <small class="error-text">El nombre es obligatorio.</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="orden">Orden Visual</label>
+        <input id="orden" type="number" formControlName="orden"
+          [class.input-error]="laneForm.get('orden')?.invalid && laneForm.get('orden')?.touched" />
+        @if (laneForm.get('orden')?.hasError('required') && laneForm.get('orden')?.touched) {
+          <small class="error-text">El orden es obligatorio.</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Rol Asignado (Quién lo ejecuta)</label>
+        <app-roles-select 
+          [selectedRoleId]="laneForm.get('rolProcesoId')?.value"
+          (selectedRoleIdChange)="onRolSelected($event)">
+        </app-roles-select>
+        @if (laneForm.get('rolProcesoId')?.hasError('required') && laneForm.get('rolProcesoId')?.touched) {
+          <small class="error-text">Debe seleccionar un rol para este carril.</small>
+        }
+      </div>
+
+      <div class="form-actions">
+        <a [routerLink]="['/lanes']" [queryParams]="{ procesoId: procesoId }" class="btn-cancel">Cancelar</a>
+        <button type="submit" class="btn-primary" [disabled]="laneForm.invalid || loading">
+          @if (loading) {
+            Guardando...
+          } @else {
+            {{ isEditMode ? 'Actualizar Carril' : 'Crear Carril' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

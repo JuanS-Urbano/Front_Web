@@ -1,1 +1,36 @@
-<p>historial works!</p>
+<div class="historial-container">
+  <h3>🕒 Historial de Modificaciones</h3>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (loading) {
+    <app-loading-spinner mensaje="Cargando línea de tiempo..."></app-loading-spinner>
+  }
+
+  @if (!loading && registros.length === 0) {
+    <div class="empty-state">
+      <p>No se registran cambios para este proceso todavía.</p>
+    </div>
+  }
+
+  @if (!loading && registros.length > 0) {
+    <div class="timeline">
+      @for (reg of registros; track reg.id) {
+        <div class="timeline-item">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-user">{{ reg.usuarioEmail }}</span>
+              <span class="timeline-date">{{ reg.fechaCambio | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="timeline-body">
+              {{ reg.descripcionCambio }}
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

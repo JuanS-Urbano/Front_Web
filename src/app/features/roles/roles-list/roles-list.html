@@ -1,1 +1,57 @@
-<p>roles-list works!</p>
+<div class="roles-list-container">
+  <div class="page-header">
+    <h2>Gestión de Roles de Proceso</h2>
+    <a routerLink="crear" class="btn-add">+ Crear Rol</a>
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (loading) {
+    <app-loading-spinner mensaje="Cargando roles..."></app-loading-spinner>
+  }
+
+  @if (!loading && roles.length === 0) {
+    <div class="empty-state">
+      <span class="empty-icon">👥</span>
+      <p>No se han creado roles en esta empresa.</p>
+    </div>
+  }
+
+  @if (!loading && roles.length > 0) {
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre del Rol</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (rol of roles; track rol.id) {
+            <tr>
+              <td>{{ rol.id }}</td>
+              <td class="fw-600">{{ rol.nombre }}</td>
+              <td>{{ rol.descripcion }}</td>
+              <td class="actions">
+                <a [routerLink]="[rol.id, 'editar']" class="btn-icon">✏️</a>
+                <button (click)="prepararEliminacion(rol.id)" class="btn-icon btn-danger-text">🗑️</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <app-confirm-dialog
+    [visible]="mostrarConfirmacion"
+    titulo="Eliminar Rol"
+    mensaje="¿Estás seguro de que deseas eliminar este rol? Si está en uso por algún carril (Lane), fallará."
+    (confirmar)="confirmarEliminacion()"
+    (cancelar)="cancelarEliminacion()">
+  </app-confirm-dialog>
+</div>

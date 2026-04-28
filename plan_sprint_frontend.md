@@ -82,11 +82,11 @@ Cada criterio de la rúbrica está mapeado a los Devs y Sprints responsables de 
 
 ### ⚠️ Checkpoint Sprint 1
 - **Criterio clave cubierto:** Modelos (10%) + Servicios (20%) + parte de Componentes (20%).
-- **Prueba de humo:** Un usuario debe poder registrar una empresa, hacer login, y ver el Dashboard vacío con la navegación correcta y su nombre visible.
+- **Prueba de humo:** ✅ Un usuario puede registrar una empresa, hacer login, y ver el Dashboard. (COMPLETADO)
 
 ---
 
-## 🏃 Sprint 2: Visor y Editor de Procesos — El Core (Semana 2)
+## 🏃 Sprint 2: Visor y Editor de Procesos — El Core (Semana 2) - EN PROGRESO
 
 **Objetivo:** Construir toda la funcionalidad CRUD de procesos y el editor visual de diagramas BPMN (actividades, gateways, arcos, lanes). Este es el Sprint más pesado y donde se gana la nota en "Funcionalidad" (15%) y "Componentes" (20%).
 
@@ -138,12 +138,12 @@ Cada criterio de la rúbrica está mapeado a los Devs y Sprints responsables de 
 |:-:|:---------|:-----|:------:|
 | 1 | **Compilación** | `ng build` pasa sin errores | ✅ Ya compila |
 | 2 | **Componentes** | Mínimo 20 componentes reutilizables documentados | ✅ 34 creados |
-| 3 | **Servicios** | 12 servicios Angular consumiendo correctamente los 11 controllers | ✅ Stubs creados |
+| 3 | **Servicios** | 12 servicios Angular consumiendo correctamente los 11 controllers | ✅ Autenticación y Usuarios conectados |
 | 4 | **Modelos** | 19 interfaces TypeScript mapeando todos los DTOs | ✅ Creados |
 | 5 | **Comunicación** | `@Input/@Output` + servicios compartidos con `BehaviorSubject` | ✅ Patrón establecido |
-| 6 | **Funcionalidad** | CRUD completo de procesos + editor visual de diagramas operativo | ⏳ Sprint 2 |
+| 6 | **Funcionalidad** | CRUD completo de procesos + editor visual de diagramas operativo | ⏳ Sprint 2 (Core) |
 | 7 | **Librerías** | Mínimo 2 librerías externas justificadas (UI framework + diagramado) | ⏳ Sprint 2 |
-| 8 | **Despliegue** | Frontend + Backend corriendo juntos en Docker | ⏳ Sprint 3 |
+| 8 | **Despliegue** | Frontend + Backend corriendo juntos en Docker | ✅ Adelantado |
 | 9 | **SonarQube** | Quality Gate PASSED, cobertura ≥ 80%, 0 bugs, duplicación ≤ 3% | ⏳ Sprint 3 |
 | 10 | **Git** | Branches por feature, PRs con descripción, tags de release | ⏳ Continuo |
 

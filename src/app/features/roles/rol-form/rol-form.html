@@ -1,1 +1,47 @@
-<p>rol-form works!</p>
+<div class="rol-form-container">
+  <div class="form-card">
+    <div class="card-header">
+      <h2>{{ isEditMode ? 'Editar Rol' : 'Crear Nuevo Rol' }}</h2>
+      <a routerLink="/roles" class="btn-close">✕</a>
+    </div>
+
+    @if (errorMessage) {
+      <div class="alert alert-error">{{ errorMessage }}</div>
+    }
+
+    <form [formGroup]="rolForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-group">
+        <label for="nombre">Nombre del Rol</label>
+        <input id="nombre" type="text" formControlName="nombre" placeholder="Ej. Gerente Comercial"
+          [class.input-error]="rolForm.get('nombre')?.invalid && rolForm.get('nombre')?.touched" />
+        @if (rolForm.get('nombre')?.hasError('required') && rolForm.get('nombre')?.touched) {
+          <small class="error-text">El nombre es obligatorio.</small>
+        }
+        @if (rolForm.get('nombre')?.hasError('minlength') && rolForm.get('nombre')?.touched) {
+          <small class="error-text">Debe tener al menos 3 caracteres.</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" formControlName="descripcion" rows="3" placeholder="Describe las responsabilidades del rol..."
+          [class.input-error]="rolForm.get('descripcion')?.invalid && rolForm.get('descripcion')?.touched"></textarea>
+        @if (rolForm.get('descripcion')?.hasError('required') && rolForm.get('descripcion')?.touched) {
+          <small class="error-text">La descripción es obligatoria.</small>
+        }
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/roles" class="btn-cancel">Cancelar</a>
+        <button type="submit" class="btn-primary" [disabled]="rolForm.invalid || loading">
+          @if (loading) {
+            Guardando...
+          } @else {
+            {{ isEditMode ? 'Actualizar Rol' : 'Crear Rol' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

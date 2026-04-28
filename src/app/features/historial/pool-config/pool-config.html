@@ -1,1 +1,48 @@
-<p>pool-config works!</p>
+<div class="pool-config-container">
+  <h3>🏊‍♂️ Configuración del Pool</h3>
+  <p class="subtitle">Un Pool agrupa todos los carriles y procesos de un dominio específico de la empresa.</p>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success">{{ successMessage }}</div>
+  }
+
+  @if (loading) {
+    <app-loading-spinner mensaje="Cargando configuración..."></app-loading-spinner>
+  }
+
+  @if (!loading && poolActual) {
+    <form [formGroup]="poolForm" (ngSubmit)="onSubmit()" class="config-form">
+      <div class="form-group">
+        <label for="nombre">Nombre del Pool</label>
+        <input id="nombre" type="text" formControlName="nombre" 
+          [class.input-error]="poolForm.get('nombre')?.invalid && poolForm.get('nombre')?.touched" />
+        
+        @if (poolForm.get('nombre')?.hasError('required') && poolForm.get('nombre')?.touched) {
+          <small class="error-text">El nombre es obligatorio.</small>
+        }
+        @if (poolForm.get('nombre')?.hasError('minlength') && poolForm.get('nombre')?.touched) {
+          <small class="error-text">Debe tener al menos 3 caracteres.</small>
+        }
+      </div>
+
+      <div class="info-group">
+        <small><strong>Pool ID:</strong> {{ poolActual.id }}</small>
+        <small><strong>Empresa ID:</strong> {{ poolActual.empresaId }}</small>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="poolForm.invalid || saving">
+          @if (saving) {
+            Guardando...
+          } @else {
+            Guardar Configuración
+          }
+        </button>
+      </div>
+    </form>
+  }
+</div>

@@ -1,1 +1,75 @@
-<p>proceso-form works!</p>
+<div class="proceso-form-container">
+  <div class="form-card">
+    <div class="card-header">
+      <h2>{{ isEditMode ? 'Editar Proceso' : 'Crear Nuevo Proceso' }}</h2>
+      <a routerLink="/procesos" class="btn-close">✕</a>
+    </div>
+
+    @if (errorMessage) {
+      <div class="alert alert-error">{{ errorMessage }}</div>
+    }
+
+    <form [formGroup]="procesoForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-group">
+        <label for="nombre">Nombre del Proceso</label>
+        <input id="nombre" type="text" formControlName="nombre" placeholder="Ej. Onboarding de Empleados"
+          [class.input-error]="procesoForm.get('nombre')?.invalid && procesoForm.get('nombre')?.touched" />
+        @if (procesoForm.get('nombre')?.hasError('required') && procesoForm.get('nombre')?.touched) {
+          <small class="error-text">El nombre es obligatorio.</small>
+        }
+        @if (procesoForm.get('nombre')?.hasError('minlength') && procesoForm.get('nombre')?.touched) {
+          <small class="error-text">Debe tener al menos 3 caracteres.</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" formControlName="descripcion" rows="3" placeholder="Describe brevemente el objetivo del proceso..."
+          [class.input-error]="procesoForm.get('descripcion')?.invalid && procesoForm.get('descripcion')?.touched"></textarea>
+        @if (procesoForm.get('descripcion')?.hasError('required') && procesoForm.get('descripcion')?.touched) {
+          <small class="error-text">La descripción es obligatoria.</small>
+        }
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half">
+          <label for="categoria">Categoría</label>
+          <select id="categoria" formControlName="categoria"
+            [class.input-error]="procesoForm.get('categoria')?.invalid && procesoForm.get('categoria')?.touched">
+            <option value="" disabled>Selecciona una categoría</option>
+            <option value="Recursos Humanos">Recursos Humanos</option>
+            <option value="Finanzas">Finanzas</option>
+            <option value="Operaciones">Operaciones</option>
+            <option value="Ventas">Ventas</option>
+            <option value="TI">Tecnología de la Información</option>
+            <option value="Otro">Otro</option>
+          </select>
+          @if (procesoForm.get('categoria')?.hasError('required') && procesoForm.get('categoria')?.touched) {
+            <small class="error-text">La categoría es obligatoria.</small>
+          }
+        </div>
+
+        <div class="form-group half">
+          <label for="estado">Estado</label>
+          <select id="estado" formControlName="estado">
+            <option value="ACTIVO">Activo</option>
+            <option value="INACTIVO">Inactivo</option>
+            <option value="EN_REVISION">En Revisión</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/procesos" class="btn-cancel">Cancelar</a>
+        <button type="submit" class="btn-primary" [disabled]="procesoForm.invalid || loading">
+          @if (loading) {
+            Guardando...
+          } @else {
+            {{ isEditMode ? 'Actualizar Proceso' : 'Crear Proceso' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
