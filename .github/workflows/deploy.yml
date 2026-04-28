@@ -8,7 +8,8 @@ on:
 env:
   IMAGE_NAME: ghcr.io/juans-urbano/front_web
   DEPLOYMENT_NAME: front-proyecto
-  DEPLOY_NAMESPACE: <namespace>
+  DEPLOY_NAMESPACE: front-proyecto
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   # ============================================================
@@ -78,6 +79,19 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
+
+      - name: Crear Namespace y Secret (si no existen)
+        run: |
+          # Crear Namespace si no existe
+          kubectl create namespace ${{ env.DEPLOY_NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+          
+          # Crear o actualizar Secret para descargar imágenes de GHCR
+          kubectl create secret docker-registry ghcr-secret \
+            --namespace=${{ env.DEPLOY_NAMESPACE }} \
+            --docker-server=ghcr.io \
+            --docker-username=${{ github.actor }} \
+            --docker-password=${{ secrets.GITHUB_TOKEN }} \
+            --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Aplicar manifiestos de Kubernetes
         run: kubectl apply -f k8s/deployment.yaml

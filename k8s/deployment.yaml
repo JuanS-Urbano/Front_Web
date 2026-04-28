@@ -10,24 +10,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: <nombre>
-  namespace: <namespace>
+  name: front-proyecto
+  namespace: front-proyecto
   labels:
-    app: <nombre>
+    app: front-proyecto
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: <nombre>
+      app: front-proyecto
   template:
     metadata:
       labels:
-        app: <nombre>
+        app: front-proyecto
     spec:
       imagePullSecrets:
         - name: ghcr-secret
       containers:
-        - name: <nombre>
+        - name: front-proyecto
           image: ghcr.io/juans-urbano/front_web:latest
           imagePullPolicy: Always
           ports:
@@ -62,14 +62,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: <nombre>
-  namespace: <namespace>
+  name: front-proyecto
+  namespace: front-proyecto
   labels:
-    app: <nombre>
+    app: front-proyecto
 spec:
   type: ClusterIP
   selector:
-    app: <nombre>
+    app: front-proyecto
   ports:
     - name: http
       protocol: TCP
@@ -83,27 +83,28 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: <nombre>
-  namespace: <namespace>
+  name: front-proyecto
+  namespace: front-proyecto
   labels:
-    app: <nombre>
+    app: front-proyecto
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
-    - host: <namespace>.inphotech.co
+    - host: front-proyecto.inphotech.co
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: <nombre>
+                name: front-proyecto
                 port:
                   number: 80
   # Descomentar para habilitar TLS con cert-manager:
   # tls:
   #   - hosts:
-  #       - <namespace>.inphotech.co
-  #     secretName: <nombre>-tls
+  #       - front-proyecto.inphotech.co
+  #     secretName: front-proyecto-tls
+
