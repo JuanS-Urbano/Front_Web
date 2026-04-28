@@ -3,4 +3,5 @@ export interface Empresa {
   nombre: string;
   nit: string;
   correoContacto: string;
+  passwordInicialAdmin?: string;
 }

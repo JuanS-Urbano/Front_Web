@@ -14,6 +14,7 @@ export class RegistroEmpresa {
   registroForm!: FormGroup;
   errorMessage = '';
   successMessage = '';
+  credencialesAdmin: { email: string; password: string } | null = null;
   loading = false;
 
   constructor(
@@ -42,9 +43,12 @@ export class RegistroEmpresa {
     // Servicio → Observable → .subscribe()
     this.empresaService.crearEmpresa(this.registroForm.value).subscribe({
       next: (response) => {
-        this.successMessage = response.message || 'Empresa registrada exitosamente';
+        this.successMessage = 'Empresa registrada. Guardá estas credenciales del administrador:';
+        this.credencialesAdmin = {
+          email: this.registroForm.value.correoContacto,
+          password: response.data?.passwordInicialAdmin ?? ''
+        };
         this.loading = false;
-        setTimeout(() => this.router.navigate(['/auth/login']), 2000);
       },
       error: (err) => {
         this.loading = false;

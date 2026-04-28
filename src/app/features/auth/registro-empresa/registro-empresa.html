@@ -9,7 +9,16 @@
     @if (successMessage) {
       <div class="alert alert-success">{{ successMessage }}</div>
     }
+    @if (credencialesAdmin) {
+      <div class="credenciales-box">
+        <p><strong>Guardalas ahora, no se volverán a mostrar:</strong></p>
+        <p>Email: <code>{{ credencialesAdmin.email }}</code></p>
+        <p>Contraseña: <code>{{ credencialesAdmin.password }}</code></p>
+        <a routerLink="/auth/login" class="btn-primary" style="display:inline-block;margin-top:12px;">Ir al login</a>
+      </div>
+    }
 
+    @if (!credencialesAdmin) {
     <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label for="nit">NIT</label>
@@ -68,8 +77,12 @@
       </button>
     </form>
 
+    } <!-- end @if (!credencialesAdmin) -->
+
+    @if (!credencialesAdmin) {
     <p class="link-text">
       ¿Ya tienes cuenta? <a routerLink="/auth/login">Iniciar sesión</a>
     </p>
+    }
   </div>
 </div>
