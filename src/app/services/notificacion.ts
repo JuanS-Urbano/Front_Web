@@ -13,6 +13,6 @@ export class Notificacion {
 
   private baseUrl = `${environment.apiUrl}/notificaciones`;
   constructor(private http: HttpClient) {}
-  enviarNotificacion(request: NotificacionRequest): Observable<ApiResponse<NotificacionResponse>> { return this.http.post<ApiResponse<NotificacionResponse>>(this.baseUrl, request); }
+  enviarNotificacion(request: NotificacionRequest): Observable<ApiResponse<NotificacionResponse>> { return this.http.post<ApiResponse<NotificacionResponse>>(`${this.baseUrl}/enviar`, request); }
   getNotificaciones(): Observable<ApiResponse<NotificacionResponse[]>> { return this.http.get<ApiResponse<NotificacionResponse[]>>(this.baseUrl); }
 }

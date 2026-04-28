@@ -15,7 +15,7 @@ export class Actividad {
   constructor(private http: HttpClient) {}
 
   getActividades(procesoId: number): Observable<ApiResponse<ActividadModel[]>> {
-    return this.http.get<ApiResponse<ActividadModel[]>>(`${this.baseUrl}?procesoId=${procesoId}`);
+    return this.http.get<ApiResponse<ActividadModel[]>>(`${this.baseUrl}/proceso/${procesoId}`);
   }
 
   crearActividad(actividad: ActividadModel): Observable<ApiResponse<ActividadModel>> {
@@ -27,6 +27,6 @@ export class Actividad {
   }
 
   deleteActividad(id: number): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`);
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}?confirmar=true`);
   }
 }

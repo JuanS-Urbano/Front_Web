@@ -13,7 +13,7 @@ export class Mensaje {
 
   private baseUrl = `${environment.apiUrl}/mensajes`;
   constructor(private http: HttpClient) {}
-  getMensajes(procesoId: number): Observable<ApiResponse<MensajeModel[]>> { return this.http.get<ApiResponse<MensajeModel[]>>(`${this.baseUrl}?procesoId=${procesoId}`); }
+  getMensajes(procesoId: number): Observable<ApiResponse<MensajeModel[]>> { return this.http.get<ApiResponse<MensajeModel[]>>(`${this.baseUrl}/proceso/${procesoId}`); }
   enviarMensaje(mensaje: MensajeModel): Observable<ApiResponse<CorrelacionResult>> { return this.http.post<ApiResponse<CorrelacionResult>>(`${this.baseUrl}/throw`, mensaje); }
-  recibirMensaje(mensajeId: number): Observable<ApiResponse<MensajeModel>> { return this.http.get<ApiResponse<MensajeModel>>(`${this.baseUrl}/catch/${mensajeId}`); }
+  recibirMensaje(mensajeId: number): Observable<ApiResponse<MensajeModel>> { return this.http.get<ApiResponse<MensajeModel>>(`${this.baseUrl}/${mensajeId}`); }
 }

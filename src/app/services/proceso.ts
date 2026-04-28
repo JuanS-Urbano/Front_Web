@@ -15,7 +15,7 @@ export class Proceso {
   constructor(private http: HttpClient) {}
 
   getProcesos(poolId: number): Observable<ApiResponse<ProcesoModel[]>> {
-    return this.http.get<ApiResponse<ProcesoModel[]>>(`${this.baseUrl}?poolId=${poolId}`);
+    return this.http.get<ApiResponse<ProcesoModel[]>>(`${this.baseUrl}/pool/${poolId}/lista`);
   }
 
   getProcesoById(id: number): Observable<ApiResponse<ProcesoModel>> {

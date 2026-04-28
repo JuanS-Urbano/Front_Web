@@ -12,8 +12,8 @@ export class Gateway {
 
   private baseUrl = `${environment.apiUrl}/gateways`;
   constructor(private http: HttpClient) {}
-  getGateways(procesoId: number): Observable<ApiResponse<GatewayModel[]>> { return this.http.get<ApiResponse<GatewayModel[]>>(`${this.baseUrl}?procesoId=${procesoId}`); }
+  getGateways(procesoId: number): Observable<ApiResponse<GatewayModel[]>> { return this.http.get<ApiResponse<GatewayModel[]>>(`${this.baseUrl}/proceso/${procesoId}`); }
   crearGateway(gateway: GatewayModel): Observable<ApiResponse<GatewayModel>> { return this.http.post<ApiResponse<GatewayModel>>(this.baseUrl, gateway); }
   updateGateway(id: number, gateway: Partial<GatewayModel>): Observable<ApiResponse<GatewayModel>> { return this.http.put<ApiResponse<GatewayModel>>(`${this.baseUrl}/${id}`, gateway); }
-  deleteGateway(id: number): Observable<ApiResponse<void>> { return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`); }
+  deleteGateway(id: number): Observable<ApiResponse<void>> { return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}?confirmar=true`); }
 }

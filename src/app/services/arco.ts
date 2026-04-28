@@ -12,7 +12,7 @@ export class Arco {
 
   private baseUrl = `${environment.apiUrl}/arcos`;
   constructor(private http: HttpClient) {}
-  getArcos(procesoId: number): Observable<ApiResponse<ArcoModel[]>> { return this.http.get<ApiResponse<ArcoModel[]>>(`${this.baseUrl}?procesoId=${procesoId}`); }
+  getArcos(procesoId: number): Observable<ApiResponse<ArcoModel[]>> { return this.http.get<ApiResponse<ArcoModel[]>>(`${this.baseUrl}/proceso/${procesoId}`); }
   crearArco(arco: ArcoModel): Observable<ApiResponse<ArcoModel>> { return this.http.post<ApiResponse<ArcoModel>>(this.baseUrl, arco); }
   updateArco(id: number, arco: Partial<ArcoModel>): Observable<ApiResponse<ArcoModel>> { return this.http.put<ApiResponse<ArcoModel>>(`${this.baseUrl}/${id}`, arco); }
   deleteArco(id: number): Observable<ApiResponse<void>> { return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`); }
