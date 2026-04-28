@@ -1,1 +1,32 @@
-<p>toolbar works!</p>
+<div class="toolbar-container">
+  <div class="toolbar-group">
+    <button class="btn-tool" (click)="onAddActividad()">
+      <span class="icon">🟦</span>
+      <span>Actividad</span>
+    </button>
+    
+    <div class="dropdown">
+      <button class="btn-tool dropdown-toggle">
+        <span class="icon">🔶</span>
+        <span>Gateway</span>
+      </button>
+      <div class="dropdown-menu">
+        <button (click)="onAddGateway('Exclusivo')">Exclusivo (XOR)</button>
+        <button (click)="onAddGateway('Paralelo')">Paralelo (AND)</button>
+        <button (click)="onAddGateway('Inclusivo')">Inclusivo (OR)</button>
+      </div>
+    </div>
+
+    <button class="btn-tool" (click)="onAddArco()">
+      <span class="icon">↗️</span>
+      <span>Arco</span>
+    </button>
+  </div>
+
+  <div class="toolbar-group">
+    <button class="btn-save" (click)="onSave()">
+      <span class="icon">💾</span>
+      <span>Guardar Cambios</span>
+    </button>
+  </div>
+</div>

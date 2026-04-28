@@ -1,1 +1,12 @@
-<p>roles-select works!</p>
+<div class="roles-select-container">
+  @if (loading) {
+    <span class="loading-text">Cargando roles...</span>
+  } @else {
+    <select class="roles-dropdown" [ngModel]="selectedRoleId" (change)="onChange($event)">
+      <option [ngValue]="null" disabled>Seleccione un rol...</option>
+      @for (rol of roles; track rol.id) {
+        <option [value]="rol.id">{{ rol.nombre }}</option>
+      }
+    </select>
+  }
+</div>

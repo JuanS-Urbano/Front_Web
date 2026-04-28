@@ -1,1 +1,54 @@
-<p>procesos-list works!</p>
+<div class="procesos-list-container">
+  <div class="page-header">
+    <h2>Gestión de Procesos</h2>
+    <a routerLink="crear" class="btn-add">+ Crear Proceso</a>
+  </div>
+
+  <div class="toolbar">
+    <app-search-bar (searchChange)="onSearch($event)"></app-search-bar>
+  </div>
+
+  @if (loading) {
+    <app-loading-spinner mensaje="Cargando procesos..."></app-loading-spinner>
+  }
+
+  @if (!loading && procesosFiltrados.length === 0) {
+    <div class="empty-state">
+      <span class="empty-icon">📂</span>
+      <p>No se encontraron procesos</p>
+    </div>
+  }
+
+  @if (!loading && procesosFiltrados.length > 0) {
+    <div class="grid">
+      @for (proceso of procesosFiltrados; track proceso.id) {
+        <div class="card">
+          <div class="card-header">
+            <h3>{{ proceso.nombre }}</h3>
+            <span class="badge" [class.badge-active]="proceso.estado === 'ACTIVO'">{{ proceso.estado }}</span>
+          </div>
+          <p class="desc">{{ proceso.descripcion }}</p>
+          <div class="meta">
+            <span class="cat">{{ proceso.categoria }}</span>
+            @if (proceso.compartido) {
+              <span class="shared">🌍 Compartido</span>
+            }
+          </div>
+          <div class="actions">
+            <a [routerLink]="[proceso.id]" class="btn btn-outline">Editor</a>
+            <a [routerLink]="[proceso.id, 'editar']" class="btn btn-outline">Editar</a>
+            <button (click)="prepararEliminacion(proceso.id)" class="btn btn-danger">Borrar</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <app-confirm-dialog
+    [visible]="mostrarConfirmacion"
+    titulo="Eliminar Proceso"
+    mensaje="¿Estás seguro de que deseas eliminar este proceso? Esta acción no se puede deshacer."
+    (confirmar)="confirmarEliminacion()"
+    (cancelar)="cancelarEliminacion()">
+  </app-confirm-dialog>
+</div>

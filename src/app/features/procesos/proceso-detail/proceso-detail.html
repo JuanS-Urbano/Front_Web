@@ -1,1 +1,115 @@
-<p>proceso-detail works!</p>
+<div class="proceso-detail-container">
+  
+  <div class="header-bar">
+    <div class="header-left">
+      <a routerLink="/procesos" class="btn-back">← Volver</a>
+      @if (proceso) {
+        <h2 class="proceso-title">{{ proceso.nombre }}</h2>
+        <span class="badge" [class.badge-active]="proceso.estado === 'ACTIVO'">{{ proceso.estado }}</span>
+      }
+    </div>
+    <div class="header-right">
+      @if (proceso) {
+        <span class="categoria">{{ proceso.categoria }}</span>
+        <a [routerLink]="['/procesos', proceso.id, 'editar']" class="btn-edit">✏️ Editar Info</a>
+      }
+    </div>
+  </div>
+
+  @if (proceso && !loading) {
+    <!-- Tabs Navigation -->
+    <div class="tabs-nav">
+      <button class="tab-btn" [class.active]="activeTab === 'editor'" (click)="activeTab = 'editor'">🎨 Editor Canvas</button>
+      <button class="tab-btn" [class.active]="activeTab === 'historial'" (click)="activeTab = 'historial'">🕒 Historial</button>
+      <button class="tab-btn" [class.active]="activeTab === 'pool'" (click)="activeTab = 'pool'">🏊‍♂️ Configuración Pool</button>
+    </div>
+  }
+
+  @if (loading) {
+    <app-loading-spinner mensaje="Cargando entorno del proceso..."></app-loading-spinner>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (proceso && !loading) {
+    
+    @if (activeTab === 'editor') {
+      <!-- Contenedor Maestro para el Editor Visual -->
+      <div class="editor-layout">
+        <!-- Top Toolbar -->
+        <app-toolbar 
+          (addActividad)="onAddActividad()"
+          (addGateway)="onAddGateway($event)"
+          (addArco)="onAddArco()"
+          (saveDiagram)="onSaveDiagram()">
+        </app-toolbar>
+
+        <div class="editor-body">
+          <!-- Canvas Area -->
+          <div class="canvas-area">
+            <app-editor-canvas
+              [actividades]="actividades"
+              [gateways]="gateways"
+              [arcos]="arcos"
+              [lanes]="lanes"
+              (elementSelected)="onElementSelected($event)"
+              (nodeMoved)="onNodeMoved()">
+            </app-editor-canvas>
+          </div>
+
+          <!-- Sidebar Properties -->
+          <div class="properties-sidebar">
+            @if (!selectedElement) {
+              <div class="empty-selection">
+                <p>Selecciona un elemento en el lienzo para editar sus propiedades.</p>
+              </div>
+            }
+
+            @if (selectedElement?.type === 'ACTIVIDAD') {
+              <app-propiedades-actividad 
+                [actividad]="$any(selectedElement!.data)"
+                (actividadModificada)="onActividadModificada($event)">
+              </app-propiedades-actividad>
+            }
+
+            @if (selectedElement?.type === 'GATEWAY') {
+              <app-propiedades-gateway 
+                [gateway]="$any(selectedElement!.data)"
+                (gatewayModificado)="onGatewayModificado($event)">
+              </app-propiedades-gateway>
+            }
+
+            @if (selectedElement?.type === 'ARCO') {
+              <app-propiedades-arco 
+                [arco]="$any(selectedElement!.data)"
+                (arcoModificado)="onArcoModificado($event)">
+              </app-propiedades-arco>
+            }
+            
+            <hr class="sidebar-divider">
+            
+            <!-- Lanes Management inside Sidebar -->
+            <app-lanes-manager [procesoId]="procesoId!"></app-lanes-manager>
+            
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (activeTab === 'historial') {
+      <div class="historial-layout">
+        <app-historial [procesoId]="procesoId!"></app-historial>
+      </div>
+    }
+
+    @if (activeTab === 'pool') {
+      <div class="historial-layout">
+        <app-pool-config [poolId]="proceso.poolId"></app-pool-config>
+      </div>
+    }
+
+  }
+
+</div>

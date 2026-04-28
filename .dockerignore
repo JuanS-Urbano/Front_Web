@@ -1,0 +1,38 @@
+# Dependencias (se instalan dentro del container via npm ci)
+node_modules/
+
+# Output de builds anteriores
+dist/
+out-tsc/
+
+# Cache de Angular CLI
+.angular/
+
+# Control de versiones
+.git/
+.gitignore
+
+# IDE y editor
+.vscode/
+.idea/
+
+# Documentacion y archivos de proyecto
+*.md
+*.pptx
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Cobertura de tests
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+
+# Variables de entorno locales
+.env
+.env.local
+.env*.local

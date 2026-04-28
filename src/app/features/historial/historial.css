@@ -1,0 +1,89 @@
+.historial-container {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.historial-container h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #1e3a5f;
+  font-size: 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.5rem;
+}
+
+.alert { padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 0.9rem; }
+.alert-error { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+
+.empty-state { text-align: center; color: #64748b; padding: 2rem 0; font-size: 0.95rem; }
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 6px;
+  width: 2px;
+  background: #cbd5e1;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-marker {
+  position: absolute;
+  top: 4px;
+  left: -1.5rem;
+  width: 14px;
+  height: 14px;
+  background: #3b82f6;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 0 1px #cbd5e1;
+}
+
+.timeline-content {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.timeline-user {
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.timeline-date {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.timeline-body {
+  color: #475569;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}

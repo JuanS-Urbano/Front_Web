@@ -1,0 +1,27 @@
+.roles-select-container {
+  width: 100%;
+}
+
+.loading-text {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+.roles-dropdown {
+  width: 100%;
+  padding: 0.65rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  background-color: white;
+  color: #334155;
+  transition: all 0.2s;
+}
+
+.roles-dropdown:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
