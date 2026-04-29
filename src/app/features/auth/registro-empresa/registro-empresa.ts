@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Empresa } from '../../../services/empresa';
+import { finalize, timeout } from 'rxjs';
 
 @Component({
   selector: 'app-registro-empresa',
@@ -49,20 +50,27 @@ export class RegistroEmpresa {
     this.loading = true;
     this.errorMessage = '';
 
-    // Servicio → Observable → .subscribe()
-    this.empresaService.crearEmpresa(this.registroForm.value).subscribe({
-      next: (response) => {
-        this.successMessage = 'Empresa registrada. Guardá estas credenciales del administrador:';
-        this.credencialesAdmin = {
-          email: this.registroForm.value.correoContacto,
-          password: response.data?.passwordInicialAdmin ?? ''
-        };
-        this.loading = false;
-      },
-      error: (err) => {
-        this.loading = false;
-        this.errorMessage = err.error?.message || 'Error al registrar la empresa';
-      }
-    });
+    const correo = this.registroForm.value.correoContacto;
+
+    this.empresaService.crearEmpresa(this.registroForm.value)
+      .pipe(
+        timeout(15000),
+        finalize(() => { this.loading = false; })
+      )
+      .subscribe({
+        next: (response) => {
+          this.credencialesAdmin = {
+            email: correo,
+            password: response.data?.passwordInicialAdmin ?? ''
+          };
+        },
+        error: (err) => {
+          if (err.name === 'TimeoutError') {
+            this.errorMessage = 'La solicitud tardó demasiado. Revisá la conexión e intentá de nuevo.';
+          } else {
+            this.errorMessage = err.error?.message || 'Error al registrar la empresa';
+          }
+        }
+      });
   }
 }
