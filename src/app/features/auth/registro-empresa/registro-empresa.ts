@@ -15,6 +15,7 @@ export class RegistroEmpresa {
   errorMessage = '';
   successMessage = '';
   credencialesAdmin: { email: string; password: string } | null = null;
+  copiado = false;
   loading = false;
 
   constructor(
@@ -28,6 +29,14 @@ export class RegistroEmpresa {
       nit: ['', [Validators.required]],
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       correoContacto: ['', [Validators.required, Validators.email]]
+    });
+  }
+
+  copiarPassword(): void {
+    if (!this.credencialesAdmin) return;
+    navigator.clipboard.writeText(this.credencialesAdmin.password).then(() => {
+      this.copiado = true;
+      setTimeout(() => this.copiado = false, 2000);
     });
   }
 
