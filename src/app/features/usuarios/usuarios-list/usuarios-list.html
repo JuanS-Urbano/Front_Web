@@ -1,11 +1,25 @@
 <div class="usuarios-list">
   <div class="page-header">
-    <h2>Gestión de Usuarios</h2>
-    <a routerLink="crear" class="btn-add">+ Nuevo Usuario</a>
+    <div class="page-header-left">
+      <h1>Usuarios</h1>
+      <p class="page-subtitle">Gestiona el acceso y permisos del equipo en el espacio de trabajo.</p>
+    </div>
+    <a routerLink="crear" class="btn-add">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="8.5" cy="7" r="4"/>
+        <line x1="20" y1="8" x2="20" y2="14"/>
+        <line x1="23" y1="11" x2="17" y2="11"/>
+      </svg>
+      Nuevo Usuario
+    </a>
   </div>
 
   @if (loading) {
-    <div class="loading">Cargando usuarios...</div>
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <span>Cargando usuarios...</span>
+    </div>
   }
 
   @if (errorMessage) {
@@ -14,41 +28,55 @@
 
   @if (!loading && usuarios.length === 0 && !errorMessage) {
     <div class="empty-state">
-      <span class="empty-icon">👥</span>
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
       <p>No hay usuarios registrados en esta empresa</p>
     </div>
   }
 
   @if (!loading && usuarios.length > 0) {
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Email</th>
-          <th>Rol</th>
-          <th>Estado</th>
-          <th>Empresa</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (usuario of usuarios; track usuario.id) {
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
           <tr>
-            <td>{{ usuario.id }}</td>
-            <td>{{ usuario.email }}</td>
-            <td>
-              <span class="badge" [class]="'badge-' + usuario.rolSistema.toLowerCase()">
-                {{ usuario.rolSistema }}
-              </span>
-            </td>
-            <td>
-              <span [class]="usuario.isActivo ? 'status-active' : 'status-inactive'">
-                {{ usuario.isActivo ? 'Activo' : 'Inactivo' }}
-              </span>
-            </td>
-            <td>{{ usuario.empresa.nombre }}</td>
+            <th>NOMBRE</th>
+            <th>ROL</th>
+            <th>ESTADO</th>
+            <th>EMPRESA</th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (usuario of usuarios; track usuario.id) {
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar-sm">
+                    {{ usuario.email.charAt(0).toUpperCase() }}
+                  </div>
+                  <div class="user-info">
+                    <span class="user-email-primary">{{ usuario.email }}</span>
+                    <span class="user-id">ID: {{ usuario.id }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="role-badge">{{ usuario.rolSistema }}</span>
+              </td>
+              <td>
+                <span class="status-indicator" [class.status-active]="usuario.isActivo" [class.status-inactive]="!usuario.isActivo">
+                  <span class="status-dot"></span>
+                  {{ usuario.isActivo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td class="cell-secondary">{{ usuario.empresa.nombre }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   }
 </div>

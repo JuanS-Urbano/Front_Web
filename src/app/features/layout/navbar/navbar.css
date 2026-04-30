@@ -3,58 +3,162 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 1.5rem;
-  height: 56px;
-  background: #1e3a5f;
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  height: var(--navbar-height);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
-.navbar-brand {
+/* ── Left Section ──────────────────────────────────────── */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  background: var(--color-border-light);
+  border-radius: var(--radius-full);
+  min-width: 180px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.search-box:hover {
+  background: var(--color-border);
+}
+
+.search-icon {
+  stroke: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.search-placeholder {
+  color: var(--color-text-tertiary);
+  font-size: 0.85rem;
+}
+
+/* ── Tabs ──────────────────────────────────────────────── */
+.navbar-tabs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.navbar-tab {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.navbar-tab:hover {
+  color: var(--color-text);
+  background: var(--color-border-light);
+}
+
+.navbar-tab.tab-active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ── Right Section ─────────────────────────────────────── */
+.navbar-right {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.brand-icon { font-size: 1.35rem; }
-.brand-text { font-weight: 700; font-size: 1.1rem; }
-
-.navbar-info {
+.icon-btn {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  font-size: 0.85rem;
-}
-
-.user-empresa {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 0.25rem 0.65rem;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-.user-role {
-  background: #2563eb;
-  padding: 0.2rem 0.55rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.user-email { opacity: 0.85; }
-
-.btn-logout {
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
   background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.4);
-  color: #fff;
-  padding: 0.3rem 0.85rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.2s;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
 }
 
-.btn-logout:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #fff;
+.icon-btn:hover {
+  background: var(--color-border-light);
+  color: var(--color-text);
+}
+
+.icon-btn svg {
+  stroke: currentColor;
+}
+
+.navbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--color-border);
+  margin: 0 0.35rem;
+}
+
+.btn-share {
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text);
+  transition: all var(--transition-fast);
+}
+
+.btn-share:hover {
+  background: var(--color-border-light);
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.user-avatar:hover {
+  transform: scale(1.05);
+}
+
+.user-avatar svg {
+  stroke: #fff;
+}
+
+.btn-logout-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-text-tertiary);
+  transition: all var(--transition-fast);
+}
+
+.btn-logout-icon:hover {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.btn-logout-icon svg {
+  stroke: currentColor;
 }

@@ -18,6 +18,7 @@ export class ProcesosList implements OnInit {
   procesosFiltrados: ProcesoModel[] = [];
   loading = true;
   searchTerm = '';
+  viewMode: 'table' | 'cards' = 'table';
 
   // Confirm dialog state
   mostrarConfirmacion = false;

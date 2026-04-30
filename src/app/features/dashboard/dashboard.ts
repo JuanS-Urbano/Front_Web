@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Session } from '../../core/services/session';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -12,6 +13,11 @@ export class Dashboard implements OnInit {
   userEmail = '';
   empresaNombre = '';
   userRole = '';
+
+  // Display-only counts (static placeholders since there's no API for totals)
+  totalProcesos = 0;
+  totalUsuarios = 0;
+  totalRoles = 0;
 
   constructor(private sessionService: Session) {}
 

@@ -1,11 +1,29 @@
 <div class="procesos-list-container">
   <div class="page-header">
-    <h2>Gestión de Procesos</h2>
-    <a routerLink="crear" class="btn-add">+ Crear Proceso</a>
+    <div class="page-header-left">
+      <h1>Procesos</h1>
+      <p class="page-subtitle">Gestiona y supervisa todos tus diagramas de workflow.</p>
+    </div>
+    <a routerLink="crear" class="btn-add">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="8" y1="3" x2="8" y2="13"/>
+        <line x1="3" y1="8" x2="13" y2="8"/>
+      </svg>
+      Nuevo Proceso
+    </a>
   </div>
 
+  <!-- Toolbar -->
   <div class="toolbar">
     <app-search-bar (searchChange)="onSearch($event)"></app-search-bar>
+    <div class="view-toggle">
+      <button class="toggle-btn" [class.active]="viewMode === 'table'" (click)="viewMode = 'table'" title="Vista tabla">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <button class="toggle-btn" [class.active]="viewMode === 'cards'" (click)="viewMode = 'cards'" title="Vista tarjetas">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </button>
+    </div>
   </div>
 
   @if (loading) {
@@ -14,27 +32,87 @@
 
   @if (!loading && procesosFiltrados.length === 0) {
     <div class="empty-state">
-      <span class="empty-icon">📂</span>
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
       <p>No se encontraron procesos</p>
     </div>
   }
 
-  @if (!loading && procesosFiltrados.length > 0) {
+  <!-- TABLE VIEW -->
+  @if (!loading && procesosFiltrados.length > 0 && viewMode === 'table') {
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>NOMBRE</th>
+            <th>CATEGORÍA</th>
+            <th>DESCRIPCIÓN</th>
+            <th>ESTADO</th>
+            <th>ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (proceso of procesosFiltrados; track proceso.id) {
+            <tr>
+              <td>
+                <div class="cell-name">
+                  <div class="name-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                  </div>
+                  <span class="name-text">{{ proceso.nombre }}</span>
+                </div>
+              </td>
+              <td class="cell-secondary">{{ proceso.categoria }}</td>
+              <td class="cell-secondary cell-desc">{{ proceso.descripcion }}</td>
+              <td>
+                <span class="status-badge" [class.status-active]="proceso.estado === 'ACTIVO'" [class.status-draft]="proceso.estado !== 'ACTIVO'">
+                  {{ proceso.estado === 'ACTIVO' ? 'Publicado' : 'Borrador' }}
+                </span>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <a [routerLink]="[proceso.id]" class="action-btn" title="Ver editor">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </a>
+                  <a [routerLink]="[proceso.id, 'editar']" class="action-btn" title="Editar">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </a>
+                  <button (click)="prepararEliminacion(proceso.id)" class="action-btn action-danger" title="Eliminar">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- CARDS VIEW -->
+  @if (!loading && procesosFiltrados.length > 0 && viewMode === 'cards') {
     <div class="grid">
       @for (proceso of procesosFiltrados; track proceso.id) {
         <div class="card">
           <div class="card-header">
             <h3>{{ proceso.nombre }}</h3>
-            <span class="badge" [class.badge-active]="proceso.estado === 'ACTIVO'">{{ proceso.estado }}</span>
+            <span class="status-badge" [class.status-active]="proceso.estado === 'ACTIVO'" [class.status-draft]="proceso.estado !== 'ACTIVO'">
+              {{ proceso.estado === 'ACTIVO' ? 'Publicado' : 'Borrador' }}
+            </span>
           </div>
           <p class="desc">{{ proceso.descripcion }}</p>
           <div class="meta">
             <span class="cat">{{ proceso.categoria }}</span>
             @if (proceso.compartido) {
-              <span class="shared">🌍 Compartido</span>
+              <span class="shared">Compartido</span>
             }
           </div>
-          <div class="actions">
+          <div class="card-actions">
             <a [routerLink]="[proceso.id]" class="btn btn-outline">Editor</a>
             <a [routerLink]="[proceso.id, 'editar']" class="btn btn-outline">Editar</a>
             <button (click)="prepararEliminacion(proceso.id)" class="btn btn-danger">Borrar</button>

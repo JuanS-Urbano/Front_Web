@@ -1,52 +1,217 @@
-.usuarios-list { padding: 1.5rem; }
+.usuarios-list {
+  max-width: 1100px;
+}
 
+/* ── Page Header ───────────────────────────────────────── */
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
 }
 
-.page-header h2 { margin: 0; color: #1e3a5f; }
+.page-header-left h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 0.25rem;
+}
+
+.page-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
 
 .btn-add {
-  background: #2563eb; color: #fff; padding: 0.5rem 1.15rem;
-  border-radius: 8px; text-decoration: none; font-weight: 600;
-  font-size: 0.9rem; transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--color-black);
+  color: #fff;
+  padding: 0.6rem 1.15rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: background var(--transition-fast);
 }
-.btn-add:hover { background: #1d4ed8; }
 
-.loading { text-align: center; padding: 3rem; color: #6b7280; }
+.btn-add svg { stroke: #fff; }
+.btn-add:hover { background: #1f2937; }
 
-.alert { padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; }
-.alert-error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+/* ── Loading ───────────────────────────────────────────── */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
 
-.empty-state { text-align: center; padding: 3rem; color: #6b7280; }
-.empty-icon { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Alert ─────────────────────────────────────────────── */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+
+.alert-error {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+  border: 1px solid #fecaca;
+}
+
+/* ── Empty State ───────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--color-text-tertiary);
+}
+
+.empty-state svg { margin-bottom: 1rem; }
+.empty-state p { font-size: 0.95rem; }
+
+/* ── Table ─────────────────────────────────────────────── */
+.table-container {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
 
 .data-table {
-  width: 100%; border-collapse: collapse;
-  background: #fff; border-radius: 8px; overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.data-table thead { background: #f1f5f9; }
 .data-table th {
-  text-align: left; padding: 0.75rem 1rem;
-  font-size: 0.8rem; color: #64748b; text-transform: uppercase;
-  font-weight: 600; letter-spacing: 0.03em;
+  text-align: left;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
 }
-.data-table td { padding: 0.75rem 1rem; border-top: 1px solid #f1f5f9; font-size: 0.9rem; }
-.data-table tbody tr:hover { background: #f8fafc; }
 
-.badge {
-  padding: 0.2rem 0.55rem; border-radius: 4px;
-  font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+.data-table td {
+  padding: 0.85rem 1.25rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-text);
 }
-.badge-admin_plataforma { background: #fef3c7; color: #92400e; }
-.badge-admin_empresa { background: #dbeafe; color: #1e40af; }
-.badge-editor { background: #d1fae5; color: #065f46; }
-.badge-lector { background: #f3f4f6; color: #374151; }
 
-.status-active { color: #16a34a; font-weight: 600; }
-.status-inactive { color: #dc2626; font-weight: 600; }
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.data-table tbody tr:hover {
+  background: var(--color-bg);
+}
+
+/* ── User Cell ─────────────────────────────────────────── */
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar-sm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-email-primary {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.875rem;
+}
+
+.user-id {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+}
+
+/* ── Role Badge ────────────────────────────────────────── */
+.role-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+}
+
+/* ── Status ────────────────────────────────────────────── */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.status-active .status-dot {
+  background: var(--color-success);
+}
+
+.status-active {
+  color: var(--color-success);
+}
+
+.status-inactive .status-dot {
+  background: var(--color-text-tertiary);
+}
+
+.status-inactive {
+  color: var(--color-text-tertiary);
+}
+
+.cell-secondary {
+  color: var(--color-text-secondary);
+}

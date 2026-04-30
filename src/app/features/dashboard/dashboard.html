@@ -1,33 +1,104 @@
 <div class="dashboard">
-  <div class="welcome-card">
-    <h1>👋 Bienvenido</h1>
-    <p class="welcome-email">{{ userEmail }}</p>
-    <div class="welcome-meta">
-      <span class="badge badge-empresa">{{ empresaNombre }}</span>
-      <span class="badge badge-role">{{ userRole }}</span>
+  <div class="page-title-section">
+    <h1>Dashboard</h1>
+    <p class="page-subtitle">Resumen general de tu espacio de trabajo y actividad reciente.</p>
+  </div>
+
+  <!-- Top Row: Quick Start + Total Processes -->
+  <div class="top-row">
+    <div class="quick-start-card">
+      <span class="qs-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        INICIO RÁPIDO
+      </span>
+      <h2>Diseña un nuevo workflow</h2>
+      <p>Comienza desde cero o utiliza una plantilla inteligente para diseñar tu próximo proceso de negocio.</p>
+      <div class="qs-actions">
+        <a routerLink="/procesos/crear" class="btn-qs-primary">Lienzo en Blanco</a>
+        <a routerLink="/procesos" class="btn-qs-secondary">Ver Plantillas</a>
+      </div>
+    </div>
+    <div class="stat-card stat-highlight">
+      <div class="stat-label">
+        <span>TOTAL PROCESOS</span>
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+          <rect x="2" y="2" width="12" height="12" rx="3" fill="#4f46e5"/>
+          <rect x="18" y="2" width="12" height="12" rx="3" fill="#818cf8"/>
+          <rect x="2" y="18" width="12" height="12" rx="3" fill="#818cf8"/>
+          <rect x="18" y="18" width="12" height="12" rx="3" fill="#4f46e5"/>
+        </svg>
+      </div>
+      <span class="stat-number">{{ totalProcesos || '—' }}</span>
+      <span class="stat-change positive">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+          <polyline points="17 6 23 6 23 12"/>
+        </svg>
+        Activo
+      </span>
     </div>
   </div>
 
-  <div class="dashboard-grid">
+  <!-- Bottom Row: Stat Cards + Activity -->
+  <div class="bottom-row">
     <div class="stat-card">
-      <span class="stat-icon">📋</span>
-      <h3>Procesos</h3>
-      <p>Gestiona los procesos de tu empresa</p>
+      <div class="stat-label">
+        <span>USUARIOS ACTIVOS</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+        </svg>
+      </div>
+      <span class="stat-number">{{ totalUsuarios || '—' }}</span>
+      <span class="stat-detail">En tu organización</span>
     </div>
+
     <div class="stat-card">
-      <span class="stat-icon">👥</span>
-      <h3>Usuarios</h3>
-      <p>Administra los usuarios del sistema</p>
+      <div class="stat-label">
+        <span>ROLES DEFINIDOS</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </div>
+      <span class="stat-number">{{ totalRoles || '—' }}</span>
+      <span class="stat-detail">Configurados</span>
     </div>
-    <div class="stat-card">
-      <span class="stat-icon">🔑</span>
-      <h3>Roles</h3>
-      <p>Configura roles y permisos</p>
-    </div>
-    <div class="stat-card">
-      <span class="stat-icon">✉️</span>
-      <h3>Mensajería</h3>
-      <p>Gestiona mensajes entre procesos</p>
+
+    <div class="activity-card">
+      <div class="activity-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>ACTIVIDAD RECIENTE</span>
+      </div>
+      <div class="activity-list">
+        <div class="activity-item">
+          <span class="activity-dot blue"></span>
+          <div class="activity-info">
+            <span class="activity-text">{{ userEmail }} inició sesión</span>
+            <span class="activity-time">Ahora</span>
+          </div>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot gray"></span>
+          <div class="activity-info">
+            <span class="activity-text">Empresa: <strong>{{ empresaNombre }}</strong></span>
+            <span class="activity-time">Sesión activa</span>
+          </div>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot green"></span>
+          <div class="activity-info">
+            <span class="activity-text">Rol: <strong>{{ userRole }}</strong></span>
+            <span class="activity-time">Permisos activos</span>
+          </div>
+        </div>
+      </div>
+      <a routerLink="/historial" class="activity-view-all">Ver todo el historial</a>
     </div>
   </div>
 </div>
