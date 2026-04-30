@@ -2,13 +2,13 @@
   position: relative;
   width: 100%;
   height: 600px;
-  background-color: #f8fafc;
+  background-color: var(--color-bg);
   background-image: 
     linear-gradient(rgba(203, 213, 225, 0.3) 1px, transparent 1px),
     linear-gradient(90deg, rgba(203, 213, 225, 0.3) 1px, transparent 1px);
   background-size: 20px 20px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
   overflow: hidden;
   cursor: grab;
 }
@@ -30,16 +30,16 @@
 }
 
 .canvas-lane {
-  border-bottom: 2px solid #cbd5e1;
-  background: rgba(248, 250, 252, 0.5);
+  border-bottom: 2px solid var(--color-border);
+  background: rgba(249, 250, 251, 0.5);
   display: flex;
   align-items: stretch;
 }
 
 .lane-header {
   width: 40px;
-  background: #e2e8f0;
-  border-right: 2px solid #cbd5e1;
+  background: var(--color-border);
+  border-right: 2px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,7 +48,7 @@
 }
 
 .lane-name {
-  color: #475569;
+  color: var(--color-text-secondary);
   font-weight: 600;
   font-size: 0.85rem;
   letter-spacing: 1px;
@@ -66,13 +66,13 @@
 
 .arco-line {
   fill: none;
-  stroke: #64748b;
+  stroke: var(--color-text-secondary);
   stroke-width: 2;
   transition: stroke 0.2s;
 }
 
 .arco-label {
-  fill: #475569;
+  fill: var(--color-text-secondary);
   font-size: 12px;
   font-weight: 500;
   text-anchor: middle;
@@ -99,13 +99,13 @@
 .actividad {
   width: 120px;
   height: 60px;
-  background: white;
-  border: 2px solid #3b82f6;
-  border-radius: 8px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-sm);
   padding: 8px;
 }
 
@@ -117,7 +117,7 @@
 }
 
 .actividad .icon { font-size: 14px; }
-.actividad .label { font-size: 12px; font-weight: 600; color: #1e293b; text-align: center; line-height: 1.2; }
+.actividad .label { font-size: 12px; font-weight: 600; color: var(--color-text); text-align: center; line-height: 1.2; }
 
 /* Gateway Styles */
 .gateway {
@@ -132,10 +132,10 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background: white;
+  background: var(--color-surface);
   border: 2px solid #f59e0b;
   transform: rotate(45deg);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-sm);
   z-index: 1;
 }
 
@@ -154,26 +154,26 @@
   text-align: center;
   font-size: 11px;
   font-weight: 600;
-  color: #475569;
+  color: var(--color-text-secondary);
 }
 
 /* Selected State */
 .node.selected .actividad,
 .actividad.selected {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
 }
 
 .node.selected .gateway-diamond,
 .gateway.selected .gateway-diamond {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
 }
 
 /* CDK Drag Effects */
 .cdk-drag-preview {
   opacity: 0.8;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
+  box-shadow: var(--shadow-lg) !important;
 }
 
 .cdk-drag-placeholder {

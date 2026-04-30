@@ -1,16 +1,18 @@
 .panel-container {
   padding: 1rem;
-  background: white;
-  border-left: 1px solid #e2e8f0;
+  background: var(--color-surface);
   height: 100%;
 }
 
 .panel-header h3 {
   margin: 0 0 1rem;
-  font-size: 1rem;
-  color: #64748b; /* Arco color */
-  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border-light);
   padding-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .panel-form {
@@ -21,24 +23,29 @@
 
 .form-group label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--color-text-secondary);
   margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .form-group input {
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
   box-sizing: border-box;
+  color: var(--color-text);
+  transition: border-color var(--transition-fast);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #64748b;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.08);
 }
 
 .info-group {
@@ -46,12 +53,12 @@
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.75rem;
-  background: #f8fafc;
-  border-radius: 6px;
-  border: 1px solid #e2e8f0;
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
 }
 
 .info-group small {
-  color: #475569;
+  color: var(--color-text-secondary);
   font-size: 0.8rem;
 }

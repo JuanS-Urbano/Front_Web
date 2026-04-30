@@ -1,5 +1,14 @@
 <div class="registro-container">
   <div class="registro-card">
+    <!-- Logo -->
+    <div class="registro-logo">
+      <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+        <rect x="2" y="2" width="12" height="12" rx="3" fill="#111827"/>
+        <rect x="18" y="2" width="12" height="12" rx="3" fill="#6b7280"/>
+        <rect x="2" y="18" width="12" height="12" rx="3" fill="#6b7280"/>
+        <rect x="18" y="18" width="12" height="12" rx="3" fill="#111827"/>
+      </svg>
+    </div>
     <h1>Registrar Empresa</h1>
     <p class="subtitle">Crea una nueva empresa en el sistema</p>
 
@@ -11,17 +20,25 @@
     }
     @if (credencialesAdmin) {
       <div class="credenciales-box">
+        <div class="credenciales-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
         <p><strong>Empresa registrada. Guarda estas credenciales ahora, no se volverán a mostrar:</strong></p>
         <div class="credencial-row">
-          <span>Email:</span>
+          <span class="credencial-label">EMAIL</span>
           <code>{{ credencialesAdmin.email }}</code>
         </div>
         <div class="credencial-row">
-          <span>Contraseña:</span>
-          <code id="pwd-display">{{ credencialesAdmin.password }}</code>
-          <button type="button" (click)="copiarPassword()" class="btn-copy">{{ copiado ? '¡Copiado!' : 'Copiar' }}</button>
+          <span class="credencial-label">CONTRASEÑA</span>
+          <div class="credencial-value">
+            <code id="pwd-display">{{ credencialesAdmin.password }}</code>
+            <button type="button" (click)="copiarPassword()" class="btn-copy">{{ copiado ? '¡Copiado!' : 'Copiar' }}</button>
+          </div>
         </div>
-        <a routerLink="/auth/login" class="btn-primary" style="display:inline-block;margin-top:16px;">Ir al login</a>
+        <a routerLink="/auth/login" class="btn-primary" style="display:inline-block;margin-top:16px;text-align:center;">Ir al login</a>
       </div>
     }
 
@@ -29,27 +46,39 @@
     <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label for="nit">NIT</label>
-        <input
-          id="nit"
-          type="text"
-          formControlName="nit"
-          placeholder="900123456-1"
-          [class.input-error]="registroForm.get('nit')?.invalid && registroForm.get('nit')?.touched"
-        />
+        <div class="input-wrapper">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+          <input
+            id="nit"
+            type="text"
+            formControlName="nit"
+            placeholder="900123456-1"
+            [class.input-error]="registroForm.get('nit')?.invalid && registroForm.get('nit')?.touched"
+          />
+        </div>
         @if (registroForm.get('nit')?.hasError('required') && registroForm.get('nit')?.touched) {
           <small class="error-text">El NIT es obligatorio</small>
         }
       </div>
 
       <div class="form-group">
-        <label for="nombre">Nombre de la empresa</label>
-        <input
-          id="nombre"
-          type="text"
-          formControlName="nombre"
-          placeholder="Mi Empresa S.A.S."
-          [class.input-error]="registroForm.get('nombre')?.invalid && registroForm.get('nombre')?.touched"
-        />
+        <label for="nombre">NOMBRE DE LA EMPRESA</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <input
+            id="nombre"
+            type="text"
+            formControlName="nombre"
+            placeholder="Mi Empresa S.A.S."
+            [class.input-error]="registroForm.get('nombre')?.invalid && registroForm.get('nombre')?.touched"
+          />
+        </div>
         @if (registroForm.get('nombre')?.hasError('required') && registroForm.get('nombre')?.touched) {
           <small class="error-text">El nombre es obligatorio</small>
         }
@@ -59,14 +88,20 @@
       </div>
 
       <div class="form-group">
-        <label for="correoContacto">Correo de contacto</label>
-        <input
-          id="correoContacto"
-          type="email"
-          formControlName="correoContacto"
-          placeholder="contacto@empresa.com"
-          [class.input-error]="registroForm.get('correoContacto')?.invalid && registroForm.get('correoContacto')?.touched"
-        />
+        <label for="correoContacto">CORREO DE CONTACTO</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <input
+            id="correoContacto"
+            type="email"
+            formControlName="correoContacto"
+            placeholder="contacto@empresa.com"
+            [class.input-error]="registroForm.get('correoContacto')?.invalid && registroForm.get('correoContacto')?.touched"
+          />
+        </div>
         @if (registroForm.get('correoContacto')?.hasError('required') && registroForm.get('correoContacto')?.touched) {
           <small class="error-text">El correo es obligatorio</small>
         }
