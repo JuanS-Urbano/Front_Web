@@ -49,7 +49,7 @@ export class UsuarioForm implements OnInit {
       next: (response) => {
         this.successMessage = response.message || 'Usuario creado exitosamente';
         this.loading = false;
-        setTimeout(() => this.router.navigate(['/usuarios']), 1500);
+        setTimeout(() => this.router.navigate(['/usuarios']), 500);
       },
       error: (err) => {
         this.loading = false;
