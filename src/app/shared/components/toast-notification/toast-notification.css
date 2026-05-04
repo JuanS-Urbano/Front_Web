@@ -13,6 +13,10 @@
   min-width: 250px;
 }
 
+.toast-container.hide {
+  animation: slideDownFade 0.4s ease-out forwards;
+}
+
 .toast-icon {
   font-size: 1.2rem;
   display: flex;
@@ -47,5 +51,16 @@
   100% {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@keyframes slideDownFade {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(20px);
+    opacity: 0;
   }
 }
