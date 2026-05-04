@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RolProceso as RolService } from '../../../services/rol-proceso';
 import { RolProceso as RolModel } from '../../../models/rol-proceso';
+import { Session } from '../../../core/services/session';
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 
@@ -16,22 +19,34 @@ export class RolesList implements OnInit {
   roles: RolModel[] = [];
   loading = true;
   errorMessage = '';
+  userRole = '';
 
   // Confirm dialog state
   mostrarConfirmacion = false;
   rolIdAEliminar: number | null = null;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
-    private rolService: RolService
+    private rolService: RolService,
+    private sessionService: Session
   ) {}
 
   ngOnInit(): void {
+    // Get user role with auto-cleanup
+    this.sessionService.session$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((session) => {
+        this.userRole = session?.rolSistema ?? '';
+      });
+    
     this.cargarRoles();
   }
 
   cargarRoles(): void {
     this.loading = true;
-    const empresaId = 1; // Fallback to 1
+    // Obtener empresaId desde la sesión del usuario
+    const empresaId = this.sessionService.getEmpresaId() ?? 1;
 
     this.rolService.getRoles(empresaId).subscribe({
       next: (response) => {

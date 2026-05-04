@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Session } from '../../../core/services/session';
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-navbar',
@@ -14,20 +16,24 @@ export class Navbar implements OnInit {
   empresaNombre = '';
   userRole = '';
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private sessionService: Session,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    // Suscripción al Observable de sesión para refrescar la interfaz
-    this.sessionService.session$.subscribe((session) => {
-      if (session) {
-        this.userEmail = session.email;
-        this.empresaNombre = session.empresa?.nombre ?? '';
-        this.userRole = session.rolSistema;
-      }
-    });
+    // Suscripción al Observable de sesión con auto-cleanup
+    this.sessionService.session$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((session) => {
+        if (session) {
+          this.userEmail = session.email;
+          this.empresaNombre = session.empresa?.nombre ?? '';
+          this.userRole = session.rolSistema;
+        }
+      });
   }
 
   onLogout(): void {

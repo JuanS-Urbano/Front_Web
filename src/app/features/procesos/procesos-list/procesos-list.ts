@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Proceso as ProcesoService } from '../../../services/proceso';
 import { Proceso as ProcesoModel } from '../../../models/proceso';
+import { Session } from '../../../core/services/session';
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SearchBar } from '../../../shared/components/search-bar/search-bar';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
@@ -19,20 +22,35 @@ export class ProcesosList implements OnInit {
   loading = true;
   searchTerm = '';
   viewMode: 'table' | 'cards' = 'table';
+  userRole = '';
 
   // Confirm dialog state
   mostrarConfirmacion = false;
   procesoIdAEliminar: number | null = null;
 
-  constructor(private procesoService: ProcesoService) {}
+  private destroyRef = inject(DestroyRef);
+
+  constructor(
+    private procesoService: ProcesoService,
+    private sessionService: Session
+  ) {}
 
   ngOnInit(): void {
+    // Get user role with auto-cleanup
+    this.sessionService.session$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((session) => {
+        this.userRole = session?.rolSistema ?? '';
+      });
+    
     this.cargarProcesos();
   }
 
   cargarProcesos(): void {
     this.loading = true;
-    this.procesoService.getProcesos(1).subscribe({
+    // Obtener poolId desde la sesión del usuario
+    const poolId = this.sessionService.getEmpresaId() ?? 1;
+    this.procesoService.getProcesos(poolId).subscribe({
       next: (response) => {
         this.procesos = response.data;
         this.procesosFiltrados = [...this.procesos];
