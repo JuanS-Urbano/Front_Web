@@ -74,6 +74,7 @@ export class ProcesoForm implements OnInit {
     if (this.isEditMode && this.procesoId) {
       this.procesoService.updateProceso(this.procesoId, formData).subscribe({
         next: () => {
+          this.loading = false;
           this.router.navigate(['/procesos']);
         },
         error: (err) => {
@@ -91,6 +92,7 @@ export class ProcesoForm implements OnInit {
       
       this.procesoService.crearProceso(nuevoProceso).subscribe({
         next: () => {
+          this.loading = false;
           this.router.navigate(['/procesos']);
         },
         error: (err) => {
