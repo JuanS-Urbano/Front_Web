@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Proceso as ProcesoService } from '../../../services/proceso';
 import { Proceso as ProcesoModel } from '../../../models/proceso';
+import { Session } from '../../../core/services/session';
 
 @Component({
   selector: 'app-proceso-form',
@@ -21,7 +22,8 @@ export class ProcesoForm implements OnInit {
     private fb: FormBuilder,
     private procesoService: ProcesoService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private sessionService: Session
   ) {}
 
   ngOnInit(): void {
@@ -86,7 +88,7 @@ export class ProcesoForm implements OnInit {
       // Create mode
       const nuevoProceso: ProcesoModel = {
         ...formData,
-        poolId: 1, // Hardcoded for now
+        poolId: this.sessionService.getEmpresaId() ?? 1,
         compartido: false // Default
       };
       

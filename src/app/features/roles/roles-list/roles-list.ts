@@ -45,7 +45,8 @@ export class RolesList implements OnInit {
 
   cargarRoles(): void {
     this.loading = true;
-    const empresaId = 1; // Fallback to 1
+    // Obtener empresaId desde la sesión del usuario
+    const empresaId = this.sessionService.getEmpresaId() ?? 1;
 
     this.rolService.getRoles(empresaId).subscribe({
       next: (response) => {

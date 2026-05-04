@@ -48,7 +48,9 @@ export class ProcesosList implements OnInit {
 
   cargarProcesos(): void {
     this.loading = true;
-    this.procesoService.getProcesos(1).subscribe({
+    // Obtener poolId desde la sesión del usuario
+    const poolId = this.sessionService.getEmpresaId() ?? 1;
+    this.procesoService.getProcesos(poolId).subscribe({
       next: (response) => {
         this.procesos = response.data;
         this.procesosFiltrados = [...this.procesos];
