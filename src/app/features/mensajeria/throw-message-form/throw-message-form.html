@@ -1,1 +1,86 @@
-<p>throw-message-form works!</p>
+<div class="form-container">
+  <div class="form-header">
+    <h2>Enviar Mensaje (THROW)</h2>
+    <p>Lanza un evento o mensaje hacia otro proceso.</p>
+  </div>
+
+  <form [formGroup]="messageForm" (ngSubmit)="onSubmit()" class="throw-form">
+    
+    <div class="form-group">
+      <label for="nombre">Nombre del Mensaje</label>
+      <input type="text" id="nombre" formControlName="nombre" class="form-control" placeholder="Ej: PagoCompletado">
+      @if (messageForm.get('nombre')?.invalid && messageForm.get('nombre')?.touched) {
+        <span class="error-text">El nombre es requerido</span>
+      }
+    </div>
+
+    <div class="form-row">
+      <div class="form-group half">
+        <label for="estado">Tipo</label>
+        <input type="text" id="estado" formControlName="estado" class="form-control">
+      </div>
+      
+      <div class="form-group half">
+        <label for="payload">Contenido (Payload)</label>
+        <input type="text" id="payload" formControlName="payload" class="form-control" placeholder="Datos en formato JSON o texto">
+        @if (messageForm.get('payload')?.invalid && messageForm.get('payload')?.touched) {
+          <span class="error-text">El contenido es requerido</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group half">
+        <label for="procesoOrigenId">ID Proceso Origen</label>
+        <input type="number" id="procesoOrigenId" formControlName="procesoOrigenId" class="form-control" placeholder="ID origen">
+        @if (messageForm.get('procesoOrigenId')?.invalid && messageForm.get('procesoOrigenId')?.touched) {
+          <span class="error-text">ID de origen inválido</span>
+        }
+      </div>
+
+      <div class="form-group half">
+        <label for="procesoDestinoId">ID Proceso Destino</label>
+        <input type="number" id="procesoDestinoId" formControlName="procesoDestinoId" class="form-control" placeholder="ID destino">
+        @if (messageForm.get('procesoDestinoId')?.invalid && messageForm.get('procesoDestinoId')?.touched) {
+          <span class="error-text">ID de destino inválido</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-submit" [disabled]="messageForm.invalid || cargando">
+        @if (cargando) {
+          Enviando...
+        } @else {
+          Lanzar Mensaje
+        }
+      </button>
+    </div>
+  </form>
+
+  @if (error) {
+    <div class="alert alert-error">
+      {{ error }}
+    </div>
+  }
+
+  @if (resultado) {
+    <div class="result-card">
+      <h3>Resultado de Correlación</h3>
+      <div class="result-details">
+        <div class="detail-item">
+          <span class="label">Mensaje ID:</span>
+          <span class="value">{{ resultado.mensajeId }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Proceso Destino ID:</span>
+          <span class="value">{{ resultado.procesoDestinoId }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Estado:</span>
+          <span class="value badge-status" [class.success]="resultado.estado === 'SUCCESS' || resultado.estado === 'CORRELACIONADO'">{{ resultado.estado }}</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>

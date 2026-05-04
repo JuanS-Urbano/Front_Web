@@ -1,0 +1,124 @@
+.mensajes-list-container {
+  width: 100%;
+}
+
+/* ── Page Header ───────────────────────────────────────── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.page-header-left h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 0.25rem;
+}
+
+.page-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Empty State ───────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--color-text-tertiary);
+}
+
+.empty-state.error-state {
+  color: var(--color-danger);
+}
+
+.empty-state svg {
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  font-size: 0.95rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TABLE VIEW
+   ═══════════════════════════════════════════════════════════ */
+.table-container {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.data-table td {
+  padding: 0.85rem 1.25rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-text);
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.data-table tbody tr:hover {
+  background: var(--color-bg);
+}
+
+/* Cell Styles */
+.cell-name {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.name-text {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.cell-secondary {
+  color: var(--color-text-secondary);
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-throw {
+  background: var(--color-primary-light, #e0f2fe);
+  color: var(--color-primary, #0284c7);
+}
+
+.status-catch {
+  background: var(--color-warning-light, #fef3c7);
+  color: var(--color-warning, #d97706);
+}
