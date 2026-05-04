@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RolProceso as RolService } from '../../../services/rol-proceso';
 import { RolProceso as RolModel } from '../../../models/rol-proceso';
+import { Session } from '../../../core/services/session';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 
@@ -22,7 +23,8 @@ export class RolesList implements OnInit {
   rolIdAEliminar: number | null = null;
 
   constructor(
-    private rolService: RolService
+    private rolService: RolService,
+    private sessionService: Session
   ) {}
 
   ngOnInit(): void {
@@ -31,7 +33,8 @@ export class RolesList implements OnInit {
 
   cargarRoles(): void {
     this.loading = true;
-    const empresaId = 1; // Fallback to 1
+    // Obtener empresaId desde la sesión del usuario
+    const empresaId = this.sessionService.getEmpresaId() ?? 1;
 
     this.rolService.getRoles(empresaId).subscribe({
       next: (response) => {

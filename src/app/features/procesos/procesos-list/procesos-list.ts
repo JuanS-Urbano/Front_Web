@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Proceso as ProcesoService } from '../../../services/proceso';
 import { Proceso as ProcesoModel } from '../../../models/proceso';
+import { Session } from '../../../core/services/session';
 import { SearchBar } from '../../../shared/components/search-bar/search-bar';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
@@ -24,7 +25,10 @@ export class ProcesosList implements OnInit {
   mostrarConfirmacion = false;
   procesoIdAEliminar: number | null = null;
 
-  constructor(private procesoService: ProcesoService) {}
+  constructor(
+    private procesoService: ProcesoService,
+    private sessionService: Session
+  ) {}
 
   ngOnInit(): void {
     this.cargarProcesos();
@@ -32,7 +36,9 @@ export class ProcesosList implements OnInit {
 
   cargarProcesos(): void {
     this.loading = true;
-    this.procesoService.getProcesos(1).subscribe({
+    // Obtener poolId desde la sesión del usuario
+    const poolId = this.sessionService.getEmpresaId() ?? 1;
+    this.procesoService.getProcesos(poolId).subscribe({
       next: (response) => {
         this.procesos = response.data;
         this.procesosFiltrados = [...this.procesos];
