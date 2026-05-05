@@ -1,0 +1,267 @@
+.notificaciones-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 0.25rem;
+}
+
+.header p {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.content-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.form-section {
+  flex: 1;
+  min-width: 320px;
+  max-width: 450px;
+}
+
+.history-section {
+  flex: 2;
+  min-width: 400px;
+}
+
+/* Form Card from rol-form.css style */
+.card {
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  padding: 2rem;
+}
+
+.card-header {
+  margin-bottom: 1.5rem;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.card-body {
+  /* padding moved to card */
+}
+
+/* History table specific card adjustments */
+.history-section.card {
+  padding: 0;
+  border-style: solid; /* Table card looks better solid */
+}
+
+.history-section .card-header {
+  padding: 1.25rem;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--color-border-light);
+  background: var(--color-bg);
+}
+
+.p-0 { padding: 0 !important; }
+.p-2 { padding: 2rem !important; }
+.mt-1 { margin-top: 1rem; }
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.7rem 0;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: transparent;
+  box-sizing: border-box;
+  transition: border-color var(--transition-base);
+  border-radius: 0;
+}
+
+.form-control:focus {
+  outline: none;
+  border-bottom-color: var(--color-primary);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.error-text {
+  color: var(--color-danger);
+  font-size: 0.78rem;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+.form-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-submit {
+  padding: 0.6rem 1.15rem;
+  background: var(--color-black);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  width: 100%;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: #1f2937;
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Alerts */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+}
+
+.alert-error {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+  border: 1px solid #fecaca;
+}
+
+.alert-success {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+/* Table */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.data-table td {
+  padding: 1rem 1.25rem;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-text);
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+  background: var(--color-bg);
+}
+
+.cell-name {
+  display: flex;
+  align-items: center;
+}
+
+.name-text {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.cell-secondary {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.badge-type {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-border-light);
+  color: var(--color-text-secondary);
+}
+
+.status-success {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--color-text-tertiary);
+}
+
+@media (max-width: 900px) {
+  .content-layout {
+    flex-direction: column;
+  }
+  .form-section, .history-section {
+    max-width: 100%;
+    width: 100%;
+  }
+}

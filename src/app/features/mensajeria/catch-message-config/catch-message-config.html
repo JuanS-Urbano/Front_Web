@@ -1,1 +1,107 @@
-<p>catch-message-config works!</p>
+<div class="catch-config-container">
+  <div class="header">
+    <h2>Mensajes Esperados (CATCH)</h2>
+    <p>Eventos o mensajes que este proceso está configurado para recibir.</p>
+  </div>
+
+  @if (mostrarSelector) {
+    <div class="selector-container">
+      <label for="proceso-select-catch">Selecciona un proceso para ver mensajes CATCH:</label>
+      @if (loadingProcesos) {
+        <p class="loading-hint">Cargando procesos...</p>
+      } @else {
+        <select id="proceso-select-catch" class="form-control selector-input"
+                [(ngModel)]="procesoSeleccionadoId" (change)="onProcesoSeleccionado()">
+          <option [ngValue]="null" disabled>— Elige un proceso —</option>
+          @for (p of procesos; track p.id) {
+            <option [ngValue]="p.id">{{ p.nombre }}</option>
+          }
+        </select>
+      }
+    </div>
+  }
+
+  <div class="content-layout">
+    <!-- Lista de mensajes -->
+    <div class="list-section">
+      @if (loadingList) {
+        <app-loading-spinner mensaje="Cargando mensajes..."></app-loading-spinner>
+      }
+
+      @if (!loadingList && errorList) {
+        <div class="alert alert-error">{{ errorList }}</div>
+      }
+
+      @if (!loadingList && !errorList && mensajesCatch.length === 0) {
+        <div class="empty-state">
+          <p>No hay mensajes CATCH configurados para este proceso.</p>
+        </div>
+      }
+
+      @if (!loadingList && !errorList && mensajesCatch.length > 0) {
+        <ul class="message-list">
+          @for (msg of mensajesCatch; track msg.id) {
+            <li class="message-item">
+              <div class="msg-info">
+                <span class="msg-name">{{ msg.nombre }}</span>
+                <span class="msg-source">Origen: Proceso {{ msg.procesoOrigenId }}</span>
+              </div>
+              <button class="btn-outline" (click)="verDetalle(msg.id)">
+                Ver Detalle
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Panel de detalle -->
+    @if (loadingDetail || mensajeSeleccionado || errorDetail) {
+      <div class="detail-section">
+        <div class="detail-card">
+          <div class="card-header">
+            <h3>Detalle del Mensaje</h3>
+            <button class="btn-close" (click)="cerrarDetalle()">×</button>
+          </div>
+
+          <div class="card-body">
+            @if (loadingDetail) {
+              <div class="loading-mini">Cargando detalle...</div>
+            }
+
+            @if (errorDetail) {
+              <div class="alert alert-error">{{ errorDetail }}</div>
+            }
+
+            @if (mensajeSeleccionado) {
+              <div class="detail-fields">
+                <div class="field">
+                  <label>ID Mensaje:</label>
+                  <span>{{ mensajeSeleccionado.id }}</span>
+                </div>
+                <div class="field">
+                  <label>Nombre:</label>
+                  <span>{{ mensajeSeleccionado.nombre }}</span>
+                </div>
+                <div class="field">
+                  <label>Proceso Origen:</label>
+                  <span>{{ mensajeSeleccionado.procesoOrigenId }}</span>
+                </div>
+                <div class="field">
+                  <label>Proceso Destino:</label>
+                  <span>{{ mensajeSeleccionado.procesoDestinoId }}</span>
+                </div>
+                <div class="field field-full">
+                  <label>Contenido (Payload):</label>
+                  <div class="payload-box">
+                    {{ mensajeSeleccionado.payload || 'Sin contenido' }}
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

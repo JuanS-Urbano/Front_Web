@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { forkJoin, Observable } from 'rxjs';
 import { Proceso as ProcesoService } from '../../../services/proceso';
+import { Actividad as ActividadService } from '../../../services/actividad';
+import { Gateway as GatewayService } from '../../../services/gateway';
+import { Arco as ArcoService } from '../../../services/arco';
 import { Proceso as ProcesoModel } from '../../../models/proceso';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 
@@ -53,7 +57,10 @@ export class ProcesoDetail implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private procesoService: ProcesoService,
-    private laneService: LaneService
+    private laneService: LaneService,
+    private actividadService: ActividadService,
+    private gatewayService: GatewayService,
+    private arcoService: ArcoService
   ) {}
 
   ngOnInit(): void {
@@ -82,11 +89,20 @@ export class ProcesoDetail implements OnInit {
   }
 
   cargarDiagrama(id: number): void {
-    // In a real app, you would fetch Actividades, Gateways, and Arcos here via Services.
-    // For now, we initialize them empty to allow the user to start drawing.
-    this.actividades = [];
-    this.gateways = [];
-    this.arcos = [];
+    this.actividadService.getActividades(id).subscribe({
+      next: (res) => this.actividades = res.data,
+      error: (err) => console.error('Error cargando actividades', err)
+    });
+
+    this.gatewayService.getGateways(id).subscribe({
+      next: (res) => this.gateways = res.data,
+      error: (err) => console.error('Error cargando gateways', err)
+    });
+
+    this.arcoService.getArcos(id).subscribe({
+      next: (res) => this.arcos = res.data,
+      error: (err) => console.error('Error cargando arcos', err)
+    });
 
     // Fetch lanes
     this.laneService.getLanes(id).subscribe({
@@ -141,13 +157,42 @@ export class ProcesoDetail implements OnInit {
   }
 
   onSaveDiagram(): void {
-    // Here we would call the services to save the Actividades, Gateways, and Arcos
-    console.log('Guardando diagrama:', {
-      actividades: this.actividades,
-      gateways: this.gateways,
-      arcos: this.arcos
+    const peticiones: Observable<any>[] = [];
+
+    this.actividades.forEach(act => {
+      if (act.id < 0) {
+        peticiones.push(this.actividadService.crearActividad(act));
+      } else if (act.id > 0) {
+        peticiones.push(this.actividadService.updateActividad(act.id, act));
+      }
     });
-    alert('Diagrama guardado en consola (Mock)');
+
+    this.gateways.forEach(gw => {
+      if (gw.id < 0) {
+        peticiones.push(this.gatewayService.crearGateway(gw));
+      } else if (gw.id > 0) {
+        peticiones.push(this.gatewayService.updateGateway(gw.id, gw));
+      }
+    });
+
+    this.arcos.forEach(arco => {
+      if (arco.id < 0) {
+        peticiones.push(this.arcoService.crearArco(arco));
+      } else if (arco.id > 0) {
+        peticiones.push(this.arcoService.updateArco(arco.id, arco));
+      }
+    });
+
+    if (peticiones.length > 0) {
+      forkJoin(peticiones).subscribe({
+        next: () => {
+          if (this.procesoId) {
+            this.cargarDiagrama(this.procesoId);
+          }
+        },
+        error: (err) => console.error('Error guardando diagrama', err)
+      });
+    }
   }
 
   // --- Canvas Handlers ---

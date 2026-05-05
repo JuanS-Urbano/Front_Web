@@ -1,1 +1,82 @@
-<p>mensajes-list works!</p>
+<div class="mensajes-list-container">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1>Mensajes</h1>
+      <p class="page-subtitle">Historial de mensajes de este proceso.</p>
+    </div>
+  </div>
+
+  @if (mostrarSelector) {
+    <div class="selector-container">
+      <label for="proceso-select">Selecciona un proceso para ver sus mensajes:</label>
+      @if (loadingProcesos) {
+        <p class="loading-hint">Cargando procesos...</p>
+      } @else {
+        <select id="proceso-select" class="form-control selector-input"
+                [(ngModel)]="procesoSeleccionadoId" (change)="onProcesoSeleccionado()">
+          <option [ngValue]="null" disabled>— Elige un proceso —</option>
+          @for (p of procesos; track p.id) {
+            <option [ngValue]="p.id">{{ p.nombre }}</option>
+          }
+        </select>
+      }
+    </div>
+  }
+
+  @if (loading) {
+    <app-loading-spinner mensaje="Cargando mensajes..."></app-loading-spinner>
+  }
+
+  @if (!loading && error) {
+    <div class="empty-state error-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <p>{{ error }}</p>
+    </div>
+  }
+
+  @if (!loading && !error && mensajes.length === 0) {
+    <div class="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <p>No hay mensajes para este proceso.</p>
+    </div>
+  }
+
+  @if (!loading && !error && mensajes.length > 0) {
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>NOMBRE</th>
+            <th>TIPO</th>
+            <th>PROCESO ORIGEN</th>
+            <th>PROCESO DESTINO</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (mensaje of mensajes; track mensaje.id) {
+            <tr>
+              <td>
+                <div class="cell-name">
+                  <span class="name-text">{{ mensaje.nombre }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="status-badge" [class.status-throw]="mensaje.estado === 'THROW'" [class.status-catch]="mensaje.estado === 'CATCH'">
+                  {{ mensaje.estado }}
+                </span>
+              </td>
+              <td class="cell-secondary">{{ mensaje.procesoOrigenId }}</td>
+              <td class="cell-secondary">{{ mensaje.procesoDestinoId }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

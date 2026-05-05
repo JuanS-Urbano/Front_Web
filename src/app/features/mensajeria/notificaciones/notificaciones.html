@@ -1,1 +1,119 @@
-<p>notificaciones works!</p>
+<div class="notificaciones-container">
+  <div class="header">
+    <h2>Notificaciones</h2>
+    <p>Envía notificaciones por correo electrónico y revisa el historial.</p>
+  </div>
+
+  <div class="content-layout">
+    <!-- Formulario para enviar notificación -->
+    <div class="form-section card">
+      <div class="card-header">
+        <h3>Enviar Notificación</h3>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="notificacionForm" (ngSubmit)="onSubmit()" class="noti-form">
+          
+          <div class="form-group">
+            <label for="destino">Destinatario (Email)</label>
+            <input type="email" id="destino" formControlName="destino" class="form-control" placeholder="ejemplo@correo.com">
+            @if (notificacionForm.get('destino')?.invalid && notificacionForm.get('destino')?.touched) {
+              <span class="error-text">Email válido es requerido</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="asunto">Asunto</label>
+            <input type="text" id="asunto" formControlName="asunto" class="form-control" placeholder="Título del mensaje">
+            @if (notificacionForm.get('asunto')?.invalid && notificacionForm.get('asunto')?.touched) {
+              <span class="error-text">El asunto es requerido</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="contenido">Cuerpo del Mensaje</label>
+            <textarea id="contenido" formControlName="contenido" class="form-control textarea" rows="4" placeholder="Escribe el mensaje aquí..."></textarea>
+            @if (notificacionForm.get('contenido')?.invalid && notificacionForm.get('contenido')?.touched) {
+              <span class="error-text">El cuerpo del mensaje es requerido</span>
+            }
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-submit" [disabled]="notificacionForm.invalid || loadingForm">
+              @if (loadingForm) {
+                Enviando...
+              } @else {
+                Enviar Correo
+              }
+            </button>
+          </div>
+
+          @if (errorForm) {
+            <div class="alert alert-error mt-1">{{ errorForm }}</div>
+          }
+          @if (exitoForm) {
+            <div class="alert alert-success mt-1">{{ exitoForm }}</div>
+          }
+        </form>
+      </div>
+    </div>
+
+    <!-- Tabla de historial -->
+    <div class="history-section card">
+      <div class="card-header">
+        <h3>Historial de Envíos</h3>
+      </div>
+      <div class="card-body p-0">
+        @if (loadingList) {
+          <div class="p-2">
+            <app-loading-spinner mensaje="Cargando historial..."></app-loading-spinner>
+          </div>
+        }
+
+        @if (!loadingList && errorList) {
+          <div class="p-2">
+            <div class="alert alert-error">{{ errorList }}</div>
+          </div>
+        }
+
+        @if (!loadingList && !errorList && notificaciones.length === 0) {
+          <div class="empty-state">
+            <p>Aún no se han enviado notificaciones.</p>
+          </div>
+        }
+
+        @if (!loadingList && !errorList && notificaciones.length > 0) {
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>DESTINATARIO</th>
+                  <th>TIPO</th>
+                  <th>ESTADO</th>
+                  <th>FECHA DE ENVÍO</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (noti of notificaciones; track noti.id) {
+                  <tr>
+                    <td>
+                      <div class="cell-name">
+                        <span class="name-text">{{ noti.destino }}</span>
+                      </div>
+                    </td>
+                    <td><span class="badge-type">{{ noti.tipo }}</span></td>
+                    <td>
+                      <span class="status-badge" [class.status-success]="noti.estado === 'ENVIADO' || noti.estado === 'SUCCESS'">
+                        {{ noti.estado }}
+                      </span>
+                    </td>
+                    <td class="cell-secondary">{{ noti.fechaEnvio | date:'short' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
