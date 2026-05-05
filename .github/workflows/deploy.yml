@@ -92,7 +92,7 @@ jobs:
 
       - name: Verificar estado del rollout
         run: |
-          sudo microk8s kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.DEPLOY_NAMESPACE }} --timeout=120s
+          sudo microk8s kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.DEPLOY_NAMESPACE }} --timeout=300s
 
       - name: Imprimir logs si falla
         if: failure()
