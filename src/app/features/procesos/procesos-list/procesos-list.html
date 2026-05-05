@@ -4,13 +4,15 @@
       <h1>Procesos</h1>
       <p class="page-subtitle">Gestiona y supervisa todos tus diagramas de workflow.</p>
     </div>
-    <a routerLink="crear" class="btn-add">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <line x1="8" y1="3" x2="8" y2="13"/>
-        <line x1="3" y1="8" x2="13" y2="8"/>
-      </svg>
-      Nuevo Proceso
-    </a>
+    @if (userRole !== 'LECTOR') {
+      <a routerLink="crear" class="btn-add">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="8" y1="3" x2="8" y2="13"/>
+          <line x1="3" y1="8" x2="13" y2="8"/>
+        </svg>
+        Nuevo Proceso
+      </a>
+    }
   </div>
 
   <!-- Toolbar -->

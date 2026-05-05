@@ -209,3 +209,46 @@
     width: 100%;
   }
 }
+
+/* ── Process Selector ─────────────────────────────────── */
+.selector-container {
+  background: var(--color-surface, #ffffff);
+  border: 1px dashed var(--color-border, #e5e7eb);
+  border-radius: var(--radius-lg, 8px);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.selector-container label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--color-text-secondary, #6b7280);
+  font-size: 0.85rem;
+}
+
+.selector-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border, #d1d5db);
+  border-radius: var(--radius-md, 6px);
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--color-text, #111827);
+  background: var(--color-bg, #f9fafb);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.selector-input:focus {
+  outline: none;
+  border-color: var(--color-primary, #0369a1);
+}
+
+.loading-hint {
+  color: var(--color-text-tertiary, #9ca3af);
+  font-size: 0.85rem;
+  font-style: italic;
+  margin: 0;
+}

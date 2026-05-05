@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Notificacion as NotificacionService } from '../../../services/notificacion';
 import { NotificacionRequest } from '../../../models/notificacion-request';
 import { NotificacionResponse } from '../../../models/notificacion-response';
+import { Session } from '../../../core/services/session';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 
 @Component({
@@ -26,14 +27,16 @@ export class Notificaciones implements OnInit {
 
   private fb = inject(FormBuilder);
   private notificacionService = inject(NotificacionService);
+  private sessionService = inject(Session);
 
   constructor() {
+    const empresaId = this.sessionService.getEmpresaId() ?? 1;
     this.notificacionForm = this.fb.group({
       destino: ['', [Validators.required, Validators.email]],
       asunto: ['', Validators.required],
       contenido: ['', Validators.required],
       tipo: ['EMAIL', Validators.required],
-      procesoId: [1, [Validators.required, Validators.min(1)]]
+      procesoId: [empresaId, [Validators.required, Validators.min(1)]]
     });
   }
 

@@ -1,7 +1,6 @@
 # ============================================================
-# INSTRUCCIONES: Reemplazar los placeholders antes de aplicar:
-#   <namespace>  -> namespace de Kubernetes (ej: frontend-prod)
-#   <nombre>     -> nombre base para los recursos (ej: front-proyecto)
+# Kubernetes Manifests — Frontend (grupo23)
+# Proyecto: front-proyecto
 # ============================================================
 
 # ============================================================

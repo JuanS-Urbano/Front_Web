@@ -1,7 +1,9 @@
 <div class="roles-list-container">
   <div class="page-header">
     <h2>Gestión de Roles de Proceso</h2>
-    <a routerLink="crear" class="btn-add">+ Crear Rol</a>
+    @if (userRole !== 'LECTOR') {
+      <a routerLink="crear" class="btn-add">+ Crear Rol</a>
+    }
   </div>
 
   @if (errorMessage) {

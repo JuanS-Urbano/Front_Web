@@ -4,6 +4,23 @@
     <p>Eventos o mensajes que este proceso está configurado para recibir.</p>
   </div>
 
+  @if (mostrarSelector) {
+    <div class="selector-container">
+      <label for="proceso-select-catch">Selecciona un proceso para ver mensajes CATCH:</label>
+      @if (loadingProcesos) {
+        <p class="loading-hint">Cargando procesos...</p>
+      } @else {
+        <select id="proceso-select-catch" class="form-control selector-input"
+                [(ngModel)]="procesoSeleccionadoId" (change)="onProcesoSeleccionado()">
+          <option [ngValue]="null" disabled>— Elige un proceso —</option>
+          @for (p of procesos; track p.id) {
+            <option [ngValue]="p.id">{{ p.nombre }}</option>
+          }
+        </select>
+      }
+    </div>
+  }
+
   <div class="content-layout">
     <!-- Lista de mensajes -->
     <div class="list-section">

@@ -6,6 +6,23 @@
     </div>
   </div>
 
+  @if (mostrarSelector) {
+    <div class="selector-container">
+      <label for="proceso-select">Selecciona un proceso para ver sus mensajes:</label>
+      @if (loadingProcesos) {
+        <p class="loading-hint">Cargando procesos...</p>
+      } @else {
+        <select id="proceso-select" class="form-control selector-input"
+                [(ngModel)]="procesoSeleccionadoId" (change)="onProcesoSeleccionado()">
+          <option [ngValue]="null" disabled>— Elige un proceso —</option>
+          @for (p of procesos; track p.id) {
+            <option [ngValue]="p.id">{{ p.nombre }}</option>
+          }
+        </select>
+      }
+    </div>
+  }
+
   @if (loading) {
     <app-loading-spinner mensaje="Cargando mensajes..."></app-loading-spinner>
   }
