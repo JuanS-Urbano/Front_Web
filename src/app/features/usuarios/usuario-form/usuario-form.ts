@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { Usuario as UsuarioService } from '../../../services/usuario';
 import { Session } from '../../../core/services/session';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-usuario-form',
@@ -15,19 +16,18 @@ export class UsuarioForm implements OnInit {
   usuarioForm!: FormGroup;
   loading = false;
   errorMessage = '';
-  successMessage = '';
 
   constructor(
     private fb: FormBuilder,
     private usuarioService: UsuarioService,
     private sessionService: Session,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
     const empresaId = this.sessionService.getEmpresaId() ?? 0;
 
-    // UsuarioCreateDTO: { email, password, empresaId }
     this.usuarioForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -44,16 +44,16 @@ export class UsuarioForm implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
-    // Servicio → Observable → .subscribe()
     this.usuarioService.crearUsuario(this.usuarioForm.value).subscribe({
       next: (response) => {
-        this.successMessage = response.message || 'Usuario creado exitosamente';
         this.loading = false;
-        setTimeout(() => this.router.navigate(['/usuarios']), 500);
+        this.toastService.mostrarExito(response.message || 'Usuario creado exitosamente');
+        setTimeout(() => this.router.navigate(['/usuarios']), 1200);
       },
       error: (err) => {
         this.loading = false;
         this.errorMessage = err.error?.message || 'Error al crear el usuario';
+        this.toastService.mostrarError(this.errorMessage);
       }
     });
   }

@@ -4,12 +4,13 @@ import { Session } from '../services/session';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const sessionService = inject(Session);
-  const userEmail = sessionService.getUserEmail();
+  const session = sessionService.getSession();
 
-  if (userEmail) {
+  if (session?.token) {
     const clonedReq = req.clone({
       setHeaders: {
-        'X-User-Email': userEmail
+        'Authorization': `Bearer ${session.token}`,
+        'X-User-Email': session.email  // Retrocompatibilidad con servicios que leen el header directamente
       }
     });
     return next(clonedReq);

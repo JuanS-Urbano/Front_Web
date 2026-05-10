@@ -6,6 +6,26 @@
     </div>
   </div>
 
+  <!-- HU-28: Correlación de mensajes -->
+  <div class="correlacion-panel">
+    <h3>Correlacionar Mensajes (HU-28)</h3>
+    <p class="panel-hint">Ingresa una clave de correlación para vincular un mensaje Throw con su Message Catch correspondiente.</p>
+    <div class="correlacion-row">
+      <input
+        type="text"
+        [(ngModel)]="correlationKeyInput"
+        placeholder="Ej: pedido-001, factura-abc..."
+        class="form-control"
+      />
+      <button
+        class="btn-primary"
+        (click)="correlacionar()"
+        [disabled]="correlacionando || !correlationKeyInput.trim()">
+        {{ correlacionando ? 'Correlacionando...' : 'Correlacionar' }}
+      </button>
+    </div>
+  </div>
+
   @if (mostrarSelector) {
     <div class="selector-container">
       <label for="proceso-select">Selecciona un proceso para ver sus mensajes:</label>

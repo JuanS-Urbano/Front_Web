@@ -3,6 +3,8 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { RolProceso as RolService } from '../../../services/rol-proceso';
 import { RolProceso as RolModel } from '../../../models/rol-proceso';
+import { Session } from '../../../core/services/session';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-rol-form',
@@ -22,7 +24,9 @@ export class RolForm implements OnInit {
     private fb: FormBuilder,
     private rolService: RolService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private sessionService: Session,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -36,14 +40,13 @@ export class RolForm implements OnInit {
       if (idStr && idStr !== 'crear') {
         this.isEditMode = true;
         this.rolId = +idStr;
-        // The service lacks a getRolById, so we fetch all and find it
         this.cargarRol(this.rolId);
       }
     });
   }
 
   cargarRol(id: number): void {
-    const empresaId = 1;
+    const empresaId = this.sessionService.getEmpresaId() ?? 0;
     this.rolService.getRoles(empresaId).subscribe({
       next: (response) => {
         const rol = response.data.find(r => r.id === id);
@@ -57,8 +60,7 @@ export class RolForm implements OnInit {
         }
       },
       error: (err) => {
-        this.errorMessage = 'Error al cargar el rol';
-        console.error(err);
+        this.errorMessage = err.error?.message || 'Error al cargar el rol';
       }
     });
   }
@@ -77,26 +79,33 @@ export class RolForm implements OnInit {
     if (this.isEditMode && this.rolId) {
       this.rolService.updateRol(this.rolId, formData).subscribe({
         next: () => {
-          this.router.navigate(['/roles']);
+          this.loading = false;
+          this.toastService.mostrarExito('Rol actualizado correctamente');
+          setTimeout(() => this.router.navigate(['/roles']), 1000);
         },
         error: (err) => {
           this.loading = false;
           this.errorMessage = err.error?.message || 'Error al actualizar el rol';
+          this.toastService.mostrarError(this.errorMessage);
         }
       });
     } else {
+      const empresaId = this.sessionService.getEmpresaId() ?? 0;
       const nuevoRol: RolModel = {
         ...formData,
-        empresaId: 1
+        empresaId
       };
-      
+
       this.rolService.crearRol(nuevoRol).subscribe({
         next: () => {
-          this.router.navigate(['/roles']);
+          this.loading = false;
+          this.toastService.mostrarExito('Rol creado correctamente');
+          setTimeout(() => this.router.navigate(['/roles']), 1000);
         },
         error: (err) => {
           this.loading = false;
           this.errorMessage = err.error?.message || 'Error al crear el rol';
+          this.toastService.mostrarError(this.errorMessage);
         }
       });
     }

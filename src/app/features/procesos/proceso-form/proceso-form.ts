@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Proceso as ProcesoService } from '../../../services/proceso';
-import { Proceso as ProcesoModel } from '../../../models/proceso';
 import { Session } from '../../../core/services/session';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-proceso-form',
@@ -23,7 +23,8 @@ export class ProcesoForm implements OnInit {
     private procesoService: ProcesoService,
     private router: Router,
     private route: ActivatedRoute,
-    private sessionService: Session
+    private sessionService: Session,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -31,7 +32,8 @@ export class ProcesoForm implements OnInit {
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       descripcion: ['', [Validators.required]],
       categoria: ['', [Validators.required]],
-      estado: ['ACTIVO', [Validators.required]]
+      estado: ['BORRADOR', [Validators.required]],
+      configuracionCompartido: [false]
     });
 
     this.route.paramMap.subscribe(params => {
@@ -52,12 +54,12 @@ export class ProcesoForm implements OnInit {
           nombre: p.nombre,
           descripcion: p.descripcion,
           categoria: p.categoria,
-          estado: p.estado
+          estado: p.estado,
+          configuracionCompartido: p.configuracionCompartido ?? false
         });
       },
       error: (err) => {
-        this.errorMessage = 'Error al cargar el proceso';
-        console.error(err);
+        this.errorMessage = err.error?.message || 'Error al cargar el proceso';
       }
     });
   }
@@ -77,29 +79,32 @@ export class ProcesoForm implements OnInit {
       this.procesoService.updateProceso(this.procesoId, formData).subscribe({
         next: () => {
           this.loading = false;
-          this.router.navigate(['/procesos']);
+          this.toastService.mostrarExito('Proceso actualizado correctamente');
+          setTimeout(() => this.router.navigate(['/procesos']), 1000);
         },
         error: (err) => {
           this.loading = false;
           this.errorMessage = err.error?.message || 'Error al actualizar el proceso';
+          this.toastService.mostrarError(this.errorMessage);
         }
       });
     } else {
-      // Create mode
-      const nuevoProceso: ProcesoModel = {
+      const poolId = this.sessionService.getPoolId() ?? this.sessionService.getEmpresaId() ?? 1;
+      const nuevoProceso = {
         ...formData,
-        poolId: this.sessionService.getEmpresaId() ?? 1,
-        compartido: false // Default
+        pool: { id: poolId }
       };
-      
+
       this.procesoService.crearProceso(nuevoProceso).subscribe({
         next: () => {
           this.loading = false;
-          this.router.navigate(['/procesos']);
+          this.toastService.mostrarExito('Proceso creado correctamente');
+          setTimeout(() => this.router.navigate(['/procesos']), 1000);
         },
         error: (err) => {
           this.loading = false;
           this.errorMessage = err.error?.message || 'Error al crear el proceso';
+          this.toastService.mostrarError(this.errorMessage);
         }
       });
     }

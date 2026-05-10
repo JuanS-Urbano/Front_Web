@@ -7,6 +7,7 @@ import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-roles-list',
@@ -21,7 +22,6 @@ export class RolesList implements OnInit {
   errorMessage = '';
   userRole = '';
 
-  // Confirm dialog state
   mostrarConfirmacion = false;
   rolIdAEliminar: number | null = null;
 
@@ -29,33 +29,32 @@ export class RolesList implements OnInit {
 
   constructor(
     private rolService: RolService,
-    private sessionService: Session
+    private sessionService: Session,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
-    // Get user role with auto-cleanup
     this.sessionService.session$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((session) => {
         this.userRole = session?.rolSistema ?? '';
       });
-    
+
     this.cargarRoles();
   }
 
   cargarRoles(): void {
     this.loading = true;
-    // Obtener empresaId desde la sesión del usuario
-    const empresaId = this.sessionService.getEmpresaId() ?? 1;
+    const empresaId = this.sessionService.getEmpresaId() ?? 0;
 
     this.rolService.getRoles(empresaId).subscribe({
       next: (response) => {
-        this.roles = response.data;
+        this.roles = response.data ?? [];
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error cargando roles', err);
-        this.errorMessage = err.error?.message || 'Error cargando roles';
+        this.errorMessage = err.error?.message || 'Error al cargar los roles';
+        this.toastService.mostrarError(this.errorMessage);
         this.loading = false;
       }
     });
@@ -77,11 +76,11 @@ export class RolesList implements OnInit {
         next: () => {
           this.mostrarConfirmacion = false;
           this.rolIdAEliminar = null;
+          this.toastService.mostrarExito('Rol eliminado correctamente');
           this.cargarRoles();
         },
         error: (err) => {
-          console.error('Error eliminando rol', err);
-          this.errorMessage = err.error?.message || 'Error al eliminar el rol';
+          this.toastService.mostrarError(err.error?.message || 'Error al eliminar el rol. Verifique que no esté en uso.');
           this.mostrarConfirmacion = false;
           this.rolIdAEliminar = null;
         }

@@ -8,6 +8,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SearchBar } from '../../../shared/components/search-bar/search-bar';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-procesos-list',
@@ -24,7 +25,6 @@ export class ProcesosList implements OnInit {
   viewMode: 'table' | 'cards' = 'table';
   userRole = '';
 
-  // Confirm dialog state
   mostrarConfirmacion = false;
   procesoIdAEliminar: number | null = null;
 
@@ -32,32 +32,31 @@ export class ProcesosList implements OnInit {
 
   constructor(
     private procesoService: ProcesoService,
-    private sessionService: Session
+    private sessionService: Session,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
-    // Get user role with auto-cleanup
     this.sessionService.session$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((session) => {
         this.userRole = session?.rolSistema ?? '';
       });
-    
+
     this.cargarProcesos();
   }
 
   cargarProcesos(): void {
     this.loading = true;
-    // Obtener poolId desde la sesión del usuario
-    const poolId = this.sessionService.getEmpresaId() ?? 1;
+    const poolId = this.sessionService.getPoolId() ?? this.sessionService.getEmpresaId() ?? 1;
     this.procesoService.getProcesos(poolId).subscribe({
       next: (response) => {
-        this.procesos = response.data;
+        this.procesos = response.data ?? [];
         this.procesosFiltrados = [...this.procesos];
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error cargando procesos:', err);
+        this.toastService.mostrarError(err.error?.message || 'Error al cargar los procesos');
         this.loading = false;
       }
     });
@@ -68,14 +67,15 @@ export class ProcesosList implements OnInit {
     if (!this.searchTerm) {
       this.procesosFiltrados = [...this.procesos];
     } else {
-      this.procesosFiltrados = this.procesos.filter(p => 
-        p.nombre.toLowerCase().includes(this.searchTerm) || 
-        p.categoria.toLowerCase().includes(this.searchTerm)
+      this.procesosFiltrados = this.procesos.filter(p =>
+        p.nombre.toLowerCase().includes(this.searchTerm) ||
+        (p.categoria?.toLowerCase().includes(this.searchTerm) ?? false)
       );
     }
   }
 
-  prepararEliminacion(id: number): void {
+  prepararEliminacion(id: number | undefined): void {
+    if (!id) return;
     this.procesoIdAEliminar = id;
     this.mostrarConfirmacion = true;
   }
@@ -91,10 +91,11 @@ export class ProcesosList implements OnInit {
         next: () => {
           this.mostrarConfirmacion = false;
           this.procesoIdAEliminar = null;
-          this.cargarProcesos(); // Refrescar lista
+          this.toastService.mostrarExito('Proceso eliminado correctamente');
+          this.cargarProcesos();
         },
         error: (err) => {
-          console.error('Error eliminando proceso', err);
+          this.toastService.mostrarError(err.error?.message || 'Error al eliminar el proceso');
           this.mostrarConfirmacion = false;
           this.procesoIdAEliminar = null;
         }

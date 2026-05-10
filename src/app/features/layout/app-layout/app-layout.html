@@ -10,3 +10,13 @@
     </footer>
   </div>
 </div>
+
+<!-- Toast global: disponible en todas las rutas del layout protegido -->
+@if (toastService.state$ | async; as toast) {
+  <app-toast-notification
+    [visible]="toast.visible"
+    [tipo]="toast.tipo"
+    [mensaje]="toast.mensaje"
+    (cerrado)="toastService.cerrar()">
+  </app-toast-notification>
+}

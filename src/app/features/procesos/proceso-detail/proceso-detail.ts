@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
+import { ToastService } from '../../../core/services/toast.service';
 import { Proceso as ProcesoService } from '../../../services/proceso';
 import { Actividad as ActividadService } from '../../../services/actividad';
 import { Gateway as GatewayService } from '../../../services/gateway';
@@ -39,6 +41,7 @@ export class ProcesoDetail implements OnInit {
   procesoId: number | null = null;
   proceso: ProcesoModel | null = null;
   loading = true;
+  loadingDiagrama = true;
   errorMessage = '';
 
   activeTab: 'editor' | 'historial' | 'pool' = 'editor';
@@ -60,7 +63,8 @@ export class ProcesoDetail implements OnInit {
     private laneService: LaneService,
     private actividadService: ActividadService,
     private gatewayService: GatewayService,
-    private arcoService: ArcoService
+    private arcoService: ArcoService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -89,27 +93,26 @@ export class ProcesoDetail implements OnInit {
   }
 
   cargarDiagrama(id: number): void {
-    this.actividadService.getActividades(id).subscribe({
-      next: (res) => this.actividades = res.data,
-      error: (err) => console.error('Error cargando actividades', err)
-    });
-
-    this.gatewayService.getGateways(id).subscribe({
-      next: (res) => this.gateways = res.data,
-      error: (err) => console.error('Error cargando gateways', err)
-    });
-
-    this.arcoService.getArcos(id).subscribe({
-      next: (res) => this.arcos = res.data,
-      error: (err) => console.error('Error cargando arcos', err)
-    });
-
-    // Fetch lanes
-    this.laneService.getLanes(id).subscribe({
-      next: (response) => {
-        this.lanes = response.data.sort((a, b) => a.orden - b.orden);
-      },
-      error: (err) => console.error('Error cargando lanes en editor', err)
+    this.loadingDiagrama = true;
+    const empty = { data: [] as any[] };
+    forkJoin([
+      this.actividadService.getActividades(id).pipe(catchError(() => of(empty))),
+      this.gatewayService.getGateways(id).pipe(catchError(() => of(empty))),
+      this.arcoService.getArcos(id).pipe(catchError(() => of(empty))),
+      this.laneService.getLanes(id).pipe(catchError(() => of(empty)))
+    ]).pipe(
+      finalize(() => this.loadingDiagrama = false)
+    ).subscribe({
+      next: ([actRes, gwRes, arcoRes, laneRes]) => {
+        this.actividades = actRes.data ?? [];
+        this.gateways    = gwRes.data ?? [];
+        this.arcos       = (arcoRes.data ?? []).map((a: any) => ({
+          ...a,
+          origenId:  +a.origenId,
+          destinoId: +a.destinoId
+        }));
+        this.lanes = (laneRes.data ?? []).sort((a: any, b: any) => (a.orden ?? 0) - (b.orden ?? 0));
+      }
     });
   }
 
@@ -186,12 +189,15 @@ export class ProcesoDetail implements OnInit {
     if (peticiones.length > 0) {
       forkJoin(peticiones).subscribe({
         next: () => {
+          this.toastService.mostrarExito('Diagrama guardado correctamente');
           if (this.procesoId) {
             this.cargarDiagrama(this.procesoId);
           }
         },
-        error: (err) => console.error('Error guardando diagrama', err)
+        error: () => this.toastService.mostrarError('Error al guardar el diagrama')
       });
+    } else {
+      this.toastService.mostrarInfo('No hay cambios pendientes de guardar');
     }
   }
 

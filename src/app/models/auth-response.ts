@@ -6,4 +6,5 @@ export interface AuthResponse {
   email: string;
   rolSistema: string;
   empresa: Referencia;
+  poolId?: number;
 }

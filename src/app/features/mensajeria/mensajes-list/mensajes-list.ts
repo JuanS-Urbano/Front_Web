@@ -8,6 +8,7 @@ import { Proceso as ProcesoService } from '../../../services/proceso';
 import { Proceso as ProcesoModel } from '../../../models/proceso';
 import { Session } from '../../../core/services/session';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-mensajes-list',
@@ -23,16 +24,20 @@ export class MensajesList implements OnInit {
   loading = true;
   error: string | null = null;
 
-  // Selector de proceso (cuando no se recibe procesoId por ruta)
   procesos: ProcesoModel[] = [];
   procesoSeleccionadoId: number | null = null;
   mostrarSelector = false;
   loadingProcesos = false;
 
+  // HU-28: correlación de mensajes
+  correlationKeyInput = '';
+  correlacionando = false;
+
   private route = inject(ActivatedRoute);
   private mensajeService = inject(MensajeService);
   private procesoService = inject(ProcesoService);
   private sessionService = inject(Session);
+  private toastService = inject(ToastService);
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('procesoId') || this.route.snapshot.paramMap.get('id');
@@ -41,7 +46,6 @@ export class MensajesList implements OnInit {
     if (pid) {
       this.cargarMensajes(pid);
     } else {
-      // No hay procesoId → mostrar selector de procesos
       this.mostrarSelector = true;
       this.loading = false;
       this.cargarProcesos();
@@ -50,7 +54,7 @@ export class MensajesList implements OnInit {
 
   cargarProcesos(): void {
     this.loadingProcesos = true;
-    const poolId = this.sessionService.getEmpresaId() ?? 1;
+    const poolId = this.sessionService.getPoolId() ?? this.sessionService.getEmpresaId() ?? 1;
     this.procesoService.getProcesos(poolId).subscribe({
       next: (res) => {
         this.procesos = res.data || [];
@@ -77,9 +81,28 @@ export class MensajesList implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error cargando mensajes:', err);
-        this.error = 'No se pudieron cargar los mensajes.';
+        this.error = err.error?.message || 'No se pudieron cargar los mensajes.';
         this.loading = false;
+      }
+    });
+  }
+
+  // HU-28: Correlacionar mensajes por clave de correlación
+  correlacionar(): void {
+    if (!this.correlationKeyInput.trim()) {
+      this.toastService.mostrarError('Ingresa una clave de correlación');
+      return;
+    }
+    this.correlacionando = true;
+    this.mensajeService.correlacionar(this.correlationKeyInput.trim()).subscribe({
+      next: (response) => {
+        this.correlacionando = false;
+        this.toastService.mostrarExito(response.message || 'Correlación realizada correctamente');
+        this.correlationKeyInput = '';
+      },
+      error: (err) => {
+        this.correlacionando = false;
+        this.toastService.mostrarError(err.error?.message || 'Error al correlacionar mensajes');
       }
     });
   }
