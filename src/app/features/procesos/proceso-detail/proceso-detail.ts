@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { forkJoin, Observable, of } from 'rxjs';
-import { catchError, finalize } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { ToastService } from '../../../core/services/toast.service';
 import { Proceso as ProcesoService } from '../../../services/proceso';
 import { Actividad as ActividadService } from '../../../services/actividad';
@@ -41,7 +41,6 @@ export class ProcesoDetail implements OnInit {
   procesoId: number | null = null;
   proceso: ProcesoModel | null = null;
   loading = true;
-  loadingDiagrama = true;
   errorMessage = '';
 
   activeTab: 'editor' | 'historial' | 'pool' = 'editor';
@@ -73,7 +72,6 @@ export class ProcesoDetail implements OnInit {
       if (idStr) {
         this.procesoId = +idStr;
         this.cargarProceso(this.procesoId);
-        this.cargarDiagrama(this.procesoId);
       }
     });
   }
@@ -84,6 +82,7 @@ export class ProcesoDetail implements OnInit {
       next: (response) => {
         this.proceso = response.data;
         this.loading = false;
+        this.cargarDiagrama(id);
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Error al cargar el proceso';
@@ -92,24 +91,54 @@ export class ProcesoDetail implements OnInit {
     });
   }
 
+  // Mapas de conversión entre valores frontend y enums del backend
+  private readonly tipoActBackend: Record<string, string> = {
+    'USER': 'USUARIO', 'SERVICE': 'SERVICIO', 'SCRIPT': 'SCRIPT', 'MANUAL': 'MANUAL',
+    'RECEPCION': 'RECEPCION', 'ENVIO': 'ENVIO'
+  };
+  private readonly tipoActFrontend: Record<string, string> = {
+    'USUARIO': 'USER', 'SERVICIO': 'SERVICE', 'SCRIPT': 'SCRIPT', 'MANUAL': 'MANUAL',
+    'RECEPCION': 'RECEPCION', 'ENVIO': 'ENVIO'
+  };
+  private readonly tipoGwBackend: Record<string, string> = {
+    'Exclusivo': 'EXCLUSIVO', 'Paralelo': 'PARALELO', 'Inclusivo': 'INCLUSIVO'
+  };
+  private readonly tipoGwFrontend: Record<string, string> = {
+    'EXCLUSIVO': 'Exclusivo', 'PARALELO': 'Paralelo', 'INCLUSIVO': 'Inclusivo'
+  };
+
   cargarDiagrama(id: number): void {
-    this.loadingDiagrama = true;
     const empty = { data: [] as any[] };
     forkJoin([
       this.actividadService.getActividades(id).pipe(catchError(() => of(empty))),
       this.gatewayService.getGateways(id).pipe(catchError(() => of(empty))),
       this.arcoService.getArcos(id).pipe(catchError(() => of(empty))),
       this.laneService.getLanes(id).pipe(catchError(() => of(empty)))
-    ]).pipe(
-      finalize(() => this.loadingDiagrama = false)
-    ).subscribe({
+    ]).subscribe({
       next: ([actRes, gwRes, arcoRes, laneRes]) => {
-        this.actividades = actRes.data ?? [];
-        this.gateways    = gwRes.data ?? [];
-        this.arcos       = (arcoRes.data ?? []).map((a: any) => ({
-          ...a,
-          origenId:  +a.origenId,
-          destinoId: +a.destinoId
+        this.actividades = (actRes.data ?? []).map((a: any) => ({
+          id: a.id,
+          nombre: a.nombre ?? '',
+          tipo: this.tipoActFrontend[a.tipoActividad] ?? a.tipoActividad ?? 'MANUAL',
+          procesoId: a.proceso?.id ?? id,
+          laneId: a.lane?.id ?? 0,
+          posicionX: a.posicionX ?? 100,
+          posicionY: a.posicionY ?? 100,
+        }));
+        this.gateways = (gwRes.data ?? []).map((g: any) => ({
+          id: g.id,
+          nombre: g.nombre ?? '',
+          tipo: this.tipoGwFrontend[g.tipoGateway] ?? g.tipoGateway ?? 'Exclusivo',
+          procesoId: g.proceso?.id ?? id,
+          posicionX: g.posicionX ?? 250,
+          posicionY: g.posicionY ?? 100,
+        }));
+        this.arcos = (arcoRes.data ?? []).map((a: any) => ({
+          id: a.id,
+          etiqueta: '',
+          origenId: +a.origenId,
+          destinoId: +a.destinoId,
+          procesoId: a.proceso?.id ?? id,
         }));
         this.lanes = (laneRes.data ?? []).sort((a: any, b: any) => (a.orden ?? 0) - (b.orden ?? 0));
       }
@@ -117,7 +146,7 @@ export class ProcesoDetail implements OnInit {
   }
 
   // --- Toolbar Handlers ---
-  
+
   onAddActividad(): void {
     const nueva: Actividad = {
       id: this.nextId--,
@@ -125,7 +154,7 @@ export class ProcesoDetail implements OnInit {
       tipo: 'USER',
       procesoId: this.procesoId!,
       laneId: 0,
-      posicionX: 100,
+      posicionX: 100 + (this.actividades.length * 20),
       posicionY: 100
     };
     this.actividades = [...this.actividades, nueva];
@@ -137,26 +166,58 @@ export class ProcesoDetail implements OnInit {
       nombre: 'Nuevo Gateway',
       tipo: tipo,
       procesoId: this.procesoId!,
-      posicionX: 250,
+      posicionX: 300 + (this.gateways.length * 20),
       posicionY: 100
     };
     this.gateways = [...this.gateways, nuevo];
   }
 
   onAddArco(): void {
-    // Simplistic approach: connect first two nodes if available, just to demonstrate
-    if (this.actividades.length > 0 && this.gateways.length > 0) {
+    const todosNodos = [
+      ...this.actividades.map(a => ({ id: a.id, tipo: 'act' })),
+      ...this.gateways.map(g => ({ id: g.id, tipo: 'gw' }))
+    ];
+    if (todosNodos.length >= 2) {
       const nuevo: Arco = {
         id: this.nextId--,
         etiqueta: '',
-        origenId: this.actividades[0].id,
-        destinoId: this.gateways[0].id,
+        origenId: todosNodos[todosNodos.length - 2].id,
+        destinoId: todosNodos[todosNodos.length - 1].id,
         procesoId: this.procesoId!
       };
       this.arcos = [...this.arcos, nuevo];
     } else {
-      alert('Necesitas al menos un nodo de origen y otro de destino para crear un arco (por ahora mockeado)');
+      this.toastService.mostrarInfo('Necesitás al menos 2 nodos en el canvas para crear un arco.');
     }
+  }
+
+  private toActividadDTO(act: Actividad): any {
+    return {
+      nombre: act.nombre,
+      tipoActividad: this.tipoActBackend[act.tipo] ?? act.tipo,
+      posicionX: act.posicionX,
+      posicionY: act.posicionY,
+      proceso: { id: act.procesoId },
+      lane: act.laneId ? { id: act.laneId } : null,
+    };
+  }
+
+  private toGatewayDTO(gw: Gateway): any {
+    return {
+      nombre: gw.nombre,
+      tipoGateway: this.tipoGwBackend[gw.tipo] ?? gw.tipo.toUpperCase(),
+      posicionX: gw.posicionX,
+      posicionY: gw.posicionY,
+      proceso: { id: gw.procesoId },
+    };
+  }
+
+  private toArcoDTO(arco: Arco): any {
+    return {
+      origenId: String(arco.origenId),
+      destinoId: String(arco.destinoId),
+      proceso: { id: arco.procesoId },
+    };
   }
 
   onSaveDiagram(): void {
@@ -164,25 +225,25 @@ export class ProcesoDetail implements OnInit {
 
     this.actividades.forEach(act => {
       if (act.id < 0) {
-        peticiones.push(this.actividadService.crearActividad(act));
+        peticiones.push(this.actividadService.crearActividad(this.toActividadDTO(act)));
       } else if (act.id > 0) {
-        peticiones.push(this.actividadService.updateActividad(act.id, act));
+        peticiones.push(this.actividadService.updateActividad(act.id, this.toActividadDTO(act)));
       }
     });
 
     this.gateways.forEach(gw => {
       if (gw.id < 0) {
-        peticiones.push(this.gatewayService.crearGateway(gw));
+        peticiones.push(this.gatewayService.crearGateway(this.toGatewayDTO(gw)));
       } else if (gw.id > 0) {
-        peticiones.push(this.gatewayService.updateGateway(gw.id, gw));
+        peticiones.push(this.gatewayService.updateGateway(gw.id, this.toGatewayDTO(gw)));
       }
     });
 
     this.arcos.forEach(arco => {
       if (arco.id < 0) {
-        peticiones.push(this.arcoService.crearArco(arco));
+        peticiones.push(this.arcoService.crearArco(this.toArcoDTO(arco)));
       } else if (arco.id > 0) {
-        peticiones.push(this.arcoService.updateArco(arco.id, arco));
+        peticiones.push(this.arcoService.updateArco(arco.id, this.toArcoDTO(arco)));
       }
     });
 

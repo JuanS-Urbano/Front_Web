@@ -72,8 +72,8 @@
               <td class="cell-secondary">{{ proceso.categoria }}</td>
               <td class="cell-secondary cell-desc">{{ proceso.descripcion }}</td>
               <td>
-                <span class="status-badge" [class.status-active]="proceso.estado === 'ACTIVO'" [class.status-draft]="proceso.estado !== 'ACTIVO'">
-                  {{ proceso.estado === 'ACTIVO' ? 'Publicado' : 'Borrador' }}
+                <span class="status-badge" [class.status-active]="proceso.estado === 'PUBLICADO'" [class.status-draft]="proceso.estado !== 'PUBLICADO'">
+                  {{ proceso.estado === 'PUBLICADO' ? 'Publicado' : 'Borrador' }}
                 </span>
               </td>
               <td>
@@ -105,8 +105,8 @@
         <div class="card">
           <div class="card-header">
             <h3>{{ proceso.nombre }}</h3>
-            <span class="status-badge" [class.status-active]="proceso.estado === 'ACTIVO'" [class.status-draft]="proceso.estado !== 'ACTIVO'">
-              {{ proceso.estado === 'ACTIVO' ? 'Publicado' : 'Borrador' }}
+            <span class="status-badge" [class.status-active]="proceso.estado === 'PUBLICADO'" [class.status-draft]="proceso.estado !== 'PUBLICADO'">
+              {{ proceso.estado === 'PUBLICADO' ? 'Publicado' : 'Borrador' }}
             </span>
           </div>
           <p class="desc">{{ proceso.descripcion }}</p>

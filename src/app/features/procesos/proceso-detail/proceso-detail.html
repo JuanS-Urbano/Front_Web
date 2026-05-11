@@ -5,7 +5,7 @@
       <a routerLink="/procesos" class="btn-back">← Volver</a>
       @if (proceso) {
         <h2 class="proceso-title">{{ proceso.nombre }}</h2>
-        <span class="badge" [class.badge-active]="proceso.estado === 'ACTIVO'">{{ proceso.estado }}</span>
+        <span class="badge" [class.badge-active]="proceso.estado === 'PUBLICADO'">{{ proceso.estado }}</span>
       }
     </div>
     <div class="header-right">
@@ -16,7 +16,7 @@
     </div>
   </div>
 
-  @if (proceso && !loading && !loadingDiagrama) {
+  @if (proceso && !loading) {
     <!-- Tabs Navigation -->
     <div class="tabs-nav">
       <button class="tab-btn" [class.active]="activeTab === 'editor'" (click)="activeTab = 'editor'">🎨 Editor Canvas</button>
@@ -25,7 +25,7 @@
     </div>
   }
 
-  @if (loading || loadingDiagrama) {
+  @if (loading) {
     <app-loading-spinner mensaje="Cargando entorno del proceso..."></app-loading-spinner>
   }
 
@@ -33,7 +33,7 @@
     <div class="alert alert-error">{{ errorMessage }}</div>
   }
 
-  @if (proceso && !loading && !loadingDiagrama) {
+  @if (proceso && !loading) {
 
     @if (activeTab === 'editor') {
       <!-- Contenedor Maestro para el Editor Visual -->
