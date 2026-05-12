@@ -1,9 +1,9 @@
 @if (actividad) {
 <div class="panel-container">
   <div class="panel-header">
-    <h3>⚙️ Propiedades Actividad</h3>
+    <h3>Propiedades Actividad</h3>
   </div>
-  
+
   <form [formGroup]="propiedadesForm" class="panel-form">
     <div class="form-group">
       <label for="act-nombre">Nombre</label>
@@ -17,6 +17,16 @@
         <option value="SERVICE">Service Task</option>
         <option value="SCRIPT">Script Task</option>
         <option value="MANUAL">Manual Task</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="act-lane">Carril (Lane)</label>
+      <select id="act-lane" formControlName="laneId">
+        <option [value]="0">— Sin carril —</option>
+        @for (lane of lanes; track lane.id) {
+          <option [value]="lane.id">{{ lane.nombre }}</option>
+        }
       </select>
     </div>
   </form>

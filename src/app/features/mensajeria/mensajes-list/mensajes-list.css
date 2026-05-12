@@ -123,6 +123,101 @@
   color: var(--color-warning, #d97706);
 }
 
+/* Estado Badge — PENDIENTE / ENTREGADO / FALLIDO */
+.estado-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--color-border-light, #f3f4f6);
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.estado-pendiente {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.estado-entregado {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.estado-fallido {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ── Correlación Panel (CU-28) ────────────────────────── */
+.correlacion-panel {
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.correlacion-panel h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.panel-hint {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  margin: 0 0 1rem;
+}
+
+.correlacion-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.correlacion-row .form-control {
+  flex: 1;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  transition: border-color var(--transition-fast);
+}
+
+.correlacion-row .form-control:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.btn-primary {
+  padding: 0.6rem 1.15rem;
+  background: var(--color-black, #111827);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition-fast);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #374151;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ── Process Selector ─────────────────────────────────── */
 .selector-container {
   background: var(--color-surface);

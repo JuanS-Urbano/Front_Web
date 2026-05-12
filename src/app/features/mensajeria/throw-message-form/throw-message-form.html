@@ -1,62 +1,95 @@
 <div class="form-container">
   <div class="form-header">
-    <h2>Enviar Mensaje (THROW)</h2>
-    <p>Lanza un evento o mensaje hacia otro proceso.</p>
+    <div>
+      <h2>Enviar Mensaje (THROW)</h2>
+      <p>Lanza un evento o mensaje hacia otro proceso.</p>
+    </div>
   </div>
 
-  <form [formGroup]="messageForm" (ngSubmit)="onSubmit()" class="throw-form">
-    
-    <div class="form-group">
-      <label for="nombre">Nombre del Mensaje</label>
-      <input type="text" id="nombre" formControlName="nombre" class="form-control" placeholder="Ej: PagoCompletado">
-      @if (messageForm.get('nombre')?.invalid && messageForm.get('nombre')?.touched) {
-        <span class="error-text">El nombre es requerido</span>
-      }
+  @if (loadingProcesos) {
+    <div class="loading-procesos">
+      <app-loading-spinner mensaje="Cargando procesos disponibles..."></app-loading-spinner>
     </div>
+  }
 
-    <div class="form-row">
-      <div class="form-group half">
-        <label for="estado">Tipo</label>
-        <input type="text" id="estado" formControlName="estado" class="form-control">
+  @if (!loadingProcesos && errorProcesos) {
+    <div class="alert alert-error">{{ errorProcesos }}</div>
+  }
+
+  @if (!loadingProcesos) {
+    <form [formGroup]="messageForm" (ngSubmit)="onSubmit()" class="throw-form">
+
+      <div class="form-group">
+        <label for="nombre">Nombre del Mensaje</label>
+        <input type="text" id="nombre" formControlName="nombre" class="form-control" placeholder="Ej: PagoCompletado">
+        @if (messageForm.get('nombre')?.invalid && messageForm.get('nombre')?.touched) {
+          <span class="error-text">El nombre es requerido</span>
+        }
       </div>
-      
-      <div class="form-group half">
-        <label for="payload">Contenido (Payload)</label>
-        <input type="text" id="payload" formControlName="payload" class="form-control" placeholder="Datos en formato JSON o texto">
-        @if (messageForm.get('payload')?.invalid && messageForm.get('payload')?.touched) {
+
+      <div class="form-group">
+        <label for="payloadJson">Contenido (Payload JSON)</label>
+        <input type="text" id="payloadJson" formControlName="payloadJson" class="form-control" placeholder='{"clave": "valor"}'>
+        @if (messageForm.get('payloadJson')?.invalid && messageForm.get('payloadJson')?.touched) {
           <span class="error-text">El contenido es requerido</span>
         }
       </div>
-    </div>
 
-    <div class="form-row">
-      <div class="form-group half">
-        <label for="procesoOrigenId">ID Proceso Origen</label>
-        <input type="number" id="procesoOrigenId" formControlName="procesoOrigenId" class="form-control" placeholder="ID origen">
-        @if (messageForm.get('procesoOrigenId')?.invalid && messageForm.get('procesoOrigenId')?.touched) {
-          <span class="error-text">ID de origen inválido</span>
+      <div class="form-group">
+        <label for="correlationKey">Clave de Correlación</label>
+        <input type="text" id="correlationKey" formControlName="correlationKey" class="form-control" placeholder="Ej: pago-orden-42">
+        @if (messageForm.get('correlationKey')?.invalid && messageForm.get('correlationKey')?.touched) {
+          <span class="error-text">La clave de correlación es requerida</span>
         }
       </div>
 
-      <div class="form-group half">
-        <label for="procesoDestinoId">ID Proceso Destino</label>
-        <input type="number" id="procesoDestinoId" formControlName="procesoDestinoId" class="form-control" placeholder="ID destino">
-        @if (messageForm.get('procesoDestinoId')?.invalid && messageForm.get('procesoDestinoId')?.touched) {
-          <span class="error-text">ID de destino inválido</span>
-        }
-      </div>
-    </div>
+      <div class="form-row">
+        <div class="form-group half">
+          <label for="procesoOrigenId">Proceso Origen</label>
+          @if (procesos.length === 0) {
+            <p class="no-procesos-hint">No hay procesos disponibles.</p>
+          } @else {
+            <select id="procesoOrigenId" formControlName="procesoOrigenId" class="form-control selector-select">
+              <option [ngValue]="null" disabled>— Selecciona proceso origen —</option>
+              @for (p of procesos; track p.id) {
+                <option [ngValue]="p.id">{{ p.nombre }}</option>
+              }
+            </select>
+          }
+          @if (messageForm.get('procesoOrigenId')?.invalid && messageForm.get('procesoOrigenId')?.touched) {
+            <span class="error-text">Selecciona un proceso de origen</span>
+          }
+        </div>
 
-    <div class="form-actions">
-      <button type="submit" class="btn-submit" [disabled]="messageForm.invalid || cargando">
-        @if (cargando) {
-          Enviando...
-        } @else {
-          Lanzar Mensaje
-        }
-      </button>
-    </div>
-  </form>
+        <div class="form-group half">
+          <label for="procesoDestinoId">Proceso Destino</label>
+          @if (procesos.length === 0) {
+            <p class="no-procesos-hint">No hay procesos disponibles.</p>
+          } @else {
+            <select id="procesoDestinoId" formControlName="procesoDestinoId" class="form-control selector-select">
+              <option [ngValue]="null" disabled>— Selecciona proceso destino —</option>
+              @for (p of procesos; track p.id) {
+                <option [ngValue]="p.id">{{ p.nombre }}</option>
+              }
+            </select>
+          }
+          @if (messageForm.get('procesoDestinoId')?.invalid && messageForm.get('procesoDestinoId')?.touched) {
+            <span class="error-text">Selecciona un proceso de destino</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" [disabled]="messageForm.invalid || cargando">
+          @if (cargando) {
+            Enviando...
+          } @else {
+            Lanzar Mensaje
+          }
+        </button>
+      </div>
+    </form>
+  }
 
   @if (error) {
     <div class="alert alert-error">

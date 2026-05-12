@@ -1,31 +1,26 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, OnChanges, SimpleChanges, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DatePipe } from '@angular/common';
 import { HistorialCambiosService } from '../../services/historial-cambios';
 import { HistorialCambios } from '../../models/historial-cambios';
-import { ApiResponse } from '../../models/api-response';
 import { LoadingSpinner } from '../../shared/components/loading-spinner/loading-spinner';
 
 @Component({
   selector: 'app-historial',
   standalone: true,
-  imports: [CommonModule, LoadingSpinner],
+  imports: [DatePipe, LoadingSpinner],
   templateUrl: './historial.html',
   styleUrl: './historial.css',
 })
-export class Historial implements OnInit, OnChanges {
+export class Historial implements OnChanges {
   @Input() procesoId!: number;
-  
+
   registros: HistorialCambios[] = [];
   loading = true;
   errorMessage = '';
 
-  constructor(private historialService: HistorialCambiosService) {}
-
-  ngOnInit(): void {
-    if (this.procesoId) {
-      this.cargarHistorial();
-    }
-  }
+  private destroyRef = inject(DestroyRef);
+  private historialService = inject(HistorialCambiosService);
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['procesoId'] && this.procesoId) {
@@ -35,17 +30,24 @@ export class Historial implements OnInit, OnChanges {
 
   cargarHistorial(): void {
     this.loading = true;
-    this.historialService.getHistorialByProceso(this.procesoId).subscribe({
-      next: (response: ApiResponse<HistorialCambios[]>) => {
-        // Sort descending by date
-        this.registros = response.data.sort((a: HistorialCambios, b: HistorialCambios) => new Date(b.fechaCambio).getTime() - new Date(a.fechaCambio).getTime());
-        this.loading = false;
-      },
-      error: (err: any) => {
-        console.error('Error cargando historial', err);
-        this.errorMessage = err.error?.message || 'Error cargando el historial de cambios';
-        this.loading = false;
-      }
-    });
+    this.errorMessage = '';
+    this.historialService.getHistorialByProceso(this.procesoId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response: any) => {
+          this.registros = (response.data ?? []).map((item: any) => ({
+            id: item.id,
+            procesoId: item.proceso?.id ?? this.procesoId,
+            usuarioEmail: item.usuario?.nombre ?? item.usuario?.email ?? `Usuario #${item.usuario?.id}`,
+            descripcionCambio: item.cambio ?? item.descripcionCambio ?? '',
+            fechaCambio: item.fecha ?? item.fechaCambio ?? '',
+          }));
+          this.loading = false;
+        },
+        error: (err: any) => {
+          this.errorMessage = err.error?.message || 'Error cargando el historial de cambios';
+          this.loading = false;
+        }
+      });
   }
 }

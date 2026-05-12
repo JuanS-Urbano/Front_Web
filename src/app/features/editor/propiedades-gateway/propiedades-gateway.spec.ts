@@ -8,7 +8,7 @@ describe('PropiedadesGateway', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PropiedadesGateway],
+      imports: [PropiedadesGateway]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PropiedadesGateway);

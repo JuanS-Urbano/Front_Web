@@ -182,3 +182,29 @@ label {
   background: var(--color-success-light);
   color: var(--color-success);
 }
+
+/* Selector de procesos */
+.selector-select {
+  appearance: auto;
+  padding: 0.6rem 0.5rem;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  background: transparent;
+  cursor: pointer;
+}
+
+.selector-select:focus {
+  outline: none;
+  border-bottom-color: var(--color-primary);
+}
+
+.no-procesos-hint {
+  font-size: 0.85rem;
+  color: var(--color-text-tertiary);
+  font-style: italic;
+  margin: 0.5rem 0 0;
+}
+
+.loading-procesos {
+  margin-bottom: 1.5rem;
+}

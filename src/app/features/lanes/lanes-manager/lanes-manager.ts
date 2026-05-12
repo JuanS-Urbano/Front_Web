@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { Lane as LaneService } from '../../../services/lane';
 import { Lane as LaneModel } from '../../../models/lane';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
@@ -23,11 +23,31 @@ export class LanesManager implements OnInit, OnChanges {
   mostrarConfirmacion = false;
   laneIdAEliminar: number | null = null;
 
-  constructor(private laneService: LaneService) {}
+  constructor(
+    private laneService: LaneService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     if (this.procesoId) {
+      // Caso 1: embebido en proceso-detail con @Input
       this.cargarLanes();
+      return;
+    }
+
+    // Caso 2: cargado como componente de ruta en /lanes/:procesoId
+    // El param vive en la ruta padre (layout → lanes/:procesoId → '' = este componente)
+    const snapshot = this.route.snapshot;
+    const idStr =
+      snapshot.paramMap.get('procesoId') ??
+      snapshot.parent?.paramMap.get('procesoId');
+
+    if (idStr) {
+      this.procesoId = +idStr;
+      this.cargarLanes();
+    } else {
+      this.loading = false;
+      this.errorMessage = 'No se especificó un proceso. Abre esta sección desde un proceso.';
     }
   }
 

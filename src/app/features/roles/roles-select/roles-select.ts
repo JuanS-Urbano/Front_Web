@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { RolProceso as RolService } from '../../../services/rol-proceso';
 import { RolProceso as RolModel } from '../../../models/rol-proceso';
+import { Session } from '../../../core/services/session';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -13,16 +14,17 @@ import { FormsModule } from '@angular/forms';
 export class RolesSelect implements OnInit {
   @Input() selectedRoleId: number | null = null;
   @Output() selectedRoleIdChange = new EventEmitter<number>();
-  
+
   roles: RolModel[] = [];
   loading = true;
 
   constructor(
-    private rolService: RolService
+    private rolService: RolService,
+    private sessionService: Session
   ) {}
 
   ngOnInit(): void {
-    const empresaId = 1;
+    const empresaId = this.sessionService.getEmpresaId() ?? 0;
     this.rolService.getRoles(empresaId).subscribe({
       next: (response) => {
         this.roles = response.data;

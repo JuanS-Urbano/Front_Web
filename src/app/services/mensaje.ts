@@ -34,4 +34,8 @@ export class Mensaje {
   getMensajesPorCorrelacion(correlationKey: string): Observable<ApiResponse<MensajeModel[]>> {
     return this.http.get<ApiResponse<MensajeModel[]>>(`${this.baseUrl}/correlation/${correlationKey}`);
   }
+
+  crearMensajeCatch(mensaje: MensajeModel): Observable<ApiResponse<MensajeModel>> {
+    return this.http.post<ApiResponse<MensajeModel>>(`${this.baseUrl}/catch`, mensaje);
+  }
 }

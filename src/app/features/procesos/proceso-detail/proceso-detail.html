@@ -68,24 +68,31 @@
             }
 
             @if (selectedElement?.type === 'ACTIVIDAD') {
-              <app-propiedades-actividad 
+              <app-propiedades-actividad
                 [actividad]="$any(selectedElement!.data)"
+                [lanes]="lanes"
                 (actividadModificada)="onActividadModificada($event)">
               </app-propiedades-actividad>
             }
 
             @if (selectedElement?.type === 'GATEWAY') {
-              <app-propiedades-gateway 
+              <app-propiedades-gateway
                 [gateway]="$any(selectedElement!.data)"
                 (gatewayModificado)="onGatewayModificado($event)">
               </app-propiedades-gateway>
             }
 
             @if (selectedElement?.type === 'ARCO') {
-              <app-propiedades-arco 
+              <app-propiedades-arco
                 [arco]="$any(selectedElement!.data)"
                 (arcoModificado)="onArcoModificado($event)">
               </app-propiedades-arco>
+            }
+
+            @if (selectedElement) {
+              <button class="btn-delete-element" (click)="onDeleteSelectedElement()">
+                🗑️ Eliminar elemento
+              </button>
             }
             
             <hr class="sidebar-divider">

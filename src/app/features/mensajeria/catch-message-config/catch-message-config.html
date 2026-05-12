@@ -1,9 +1,74 @@
 <div class="catch-config-container">
   <div class="header">
-    <h2>Mensajes Esperados (CATCH)</h2>
-    <p>Eventos o mensajes que este proceso está configurado para recibir.</p>
+    <div class="header-row">
+      <div>
+        <h2>Mensajes Esperados (CATCH)</h2>
+        <p>Eventos o mensajes que este proceso está configurado para recibir.</p>
+      </div>
+      <button class="btn-toggle" (click)="toggleFormulario()">
+        {{ mostrarFormulario ? 'Cancelar' : '+ Nuevo CATCH' }}
+      </button>
+    </div>
   </div>
 
+  <!-- Formulario de creación de mensaje CATCH (CU-27) -->
+  @if (mostrarFormulario) {
+    <div class="catch-form-card">
+      <h3>Configurar nuevo Mensaje CATCH</h3>
+      <form [formGroup]="catchForm" (ngSubmit)="crearMensajeCatch()" class="catch-creation-form">
+
+        <div class="form-group">
+          <label for="catch-nombre">Nombre del Mensaje</label>
+          <input type="text" id="catch-nombre" formControlName="nombre" class="form-control" placeholder="Ej: EsperarPagoConfirmado">
+          @if (catchForm.get('nombre')?.invalid && catchForm.get('nombre')?.touched) {
+            <span class="error-text">El nombre es requerido</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="catch-correlationKey">Clave de Correlación</label>
+          <input type="text" id="catch-correlationKey" formControlName="correlationKey" class="form-control" placeholder="Ej: pago-orden-42">
+          @if (catchForm.get('correlationKey')?.invalid && catchForm.get('correlationKey')?.touched) {
+            <span class="error-text">La clave de correlación es requerida</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="catch-procesoDestino">Proceso Destino</label>
+          @if (loadingProcesos) {
+            <p class="loading-hint">Cargando procesos...</p>
+          } @else if (procesos.length === 0) {
+            <p class="loading-hint">No hay procesos disponibles.</p>
+          } @else {
+            <select id="catch-procesoDestino" formControlName="procesoDestinoId" class="form-control selector-input">
+              <option [ngValue]="null" disabled>— Selecciona proceso destino —</option>
+              @for (p of procesos; track p.id) {
+                <option [ngValue]="p.id">{{ p.nombre }}</option>
+              }
+            </select>
+          }
+          @if (catchForm.get('procesoDestinoId')?.invalid && catchForm.get('procesoDestinoId')?.touched) {
+            <span class="error-text">Selecciona un proceso de destino</span>
+          }
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-submit" [disabled]="catchForm.invalid || creando">
+            {{ creando ? 'Creando...' : 'Crear Mensaje CATCH' }}
+          </button>
+        </div>
+
+        @if (errorCreacion) {
+          <div class="alert alert-error">{{ errorCreacion }}</div>
+        }
+        @if (exitoCreacion) {
+          <div class="alert alert-success">{{ exitoCreacion }}</div>
+        }
+      </form>
+    </div>
+  }
+
+  <!-- Selector de proceso (cuando no se recibe procesoId por ruta) -->
   @if (mostrarSelector) {
     <div class="selector-container">
       <label for="proceso-select-catch">Selecciona un proceso para ver mensajes CATCH:</label>
@@ -44,11 +109,20 @@
             <li class="message-item">
               <div class="msg-info">
                 <span class="msg-name">{{ msg.nombre }}</span>
-                <span class="msg-source">Origen: Proceso {{ msg.procesoOrigenId }}</span>
+                <span class="msg-key">Clave: {{ msg.correlationKey ?? '—' }}</span>
+                <span class="msg-source">Destino: {{ msg.procesoDestino?.nombre ?? '—' }}</span>
               </div>
-              <button class="btn-outline" (click)="verDetalle(msg.id)">
-                Ver Detalle
-              </button>
+              <div class="msg-actions">
+                <span class="estado-badge"
+                  [class.estado-pendiente]="msg.estado === 'PENDIENTE'"
+                  [class.estado-entregado]="msg.estado === 'ENTREGADO'"
+                  [class.estado-fallido]="msg.estado === 'FALLIDO'">
+                  {{ msg.estado ?? 'PENDIENTE' }}
+                </span>
+                <button class="btn-outline" (click)="verDetalle(msg.id!)">
+                  Ver Detalle
+                </button>
+              </div>
             </li>
           }
         </ul>
@@ -84,17 +158,26 @@
                   <span>{{ mensajeSeleccionado.nombre }}</span>
                 </div>
                 <div class="field">
-                  <label>Proceso Origen:</label>
-                  <span>{{ mensajeSeleccionado.procesoOrigenId }}</span>
+                  <label>Clave de Correlación:</label>
+                  <span>{{ mensajeSeleccionado.correlationKey ?? '—' }}</span>
                 </div>
                 <div class="field">
                   <label>Proceso Destino:</label>
-                  <span>{{ mensajeSeleccionado.procesoDestinoId }}</span>
+                  <span>{{ mensajeSeleccionado.procesoDestino?.nombre ?? '—' }}</span>
+                </div>
+                <div class="field">
+                  <label>Estado:</label>
+                  <span class="estado-badge"
+                    [class.estado-pendiente]="mensajeSeleccionado.estado === 'PENDIENTE'"
+                    [class.estado-entregado]="mensajeSeleccionado.estado === 'ENTREGADO'"
+                    [class.estado-fallido]="mensajeSeleccionado.estado === 'FALLIDO'">
+                    {{ mensajeSeleccionado.estado ?? 'PENDIENTE' }}
+                  </span>
                 </div>
                 <div class="field field-full">
                   <label>Contenido (Payload):</label>
                   <div class="payload-box">
-                    {{ mensajeSeleccionado.payload || 'Sin contenido' }}
+                    {{ mensajeSeleccionado.payloadJson || 'Sin contenido' }}
                   </div>
                 </div>
               </div>

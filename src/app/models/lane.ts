@@ -1,7 +1,12 @@
+import { Referencia } from './referencia';
+
 export interface Lane {
-  id: number;
+  id?: number;
   nombre: string;
+  descripcion?: string;
   orden: number;
-  rolProcesoId: number;
-  procesoId: number;
+  posicionX?: number;
+  posicionY?: number;
+  rolProceso?: Referencia;
+  proceso?: Referencia;
 }

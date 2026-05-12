@@ -14,6 +14,12 @@
     <app-loading-spinner mensaje="Cargando configuración..."></app-loading-spinner>
   }
 
+  @if (!loading && !poolActual && !errorMessage) {
+    <div class="empty-state">
+      <p>Este proceso no tiene un Pool asignado.</p>
+    </div>
+  }
+
   @if (!loading && poolActual) {
     <form [formGroup]="poolForm" (ngSubmit)="onSubmit()" class="config-form">
       <div class="form-group">

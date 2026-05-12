@@ -52,13 +52,11 @@ export class LaneForm implements OnInit {
   }
 
   cargarLane(id: number): void {
-    // The service lacks getLaneById, so we fetch all by procesoId if we know it, or we would need an endpoint.
-    // For now, we mock it or show error.
     if (!this.procesoId) {
       this.errorMessage = 'Falta el procesoId para cargar el lane.';
       return;
     }
-    
+
     this.laneService.getLanes(this.procesoId).subscribe({
       next: (response) => {
         const lane = response.data.find(l => l.id === id);
@@ -66,7 +64,7 @@ export class LaneForm implements OnInit {
           this.laneForm.patchValue({
             nombre: lane.nombre,
             orden: lane.orden,
-            rolProcesoId: lane.rolProcesoId
+            rolProcesoId: lane.rolProceso?.id ?? null
           });
         } else {
           this.errorMessage = 'Lane no encontrado.';
@@ -94,8 +92,14 @@ export class LaneForm implements OnInit {
     this.errorMessage = '';
     const formData = this.laneForm.value;
 
+    const payload: LaneModel = {
+      nombre: formData.nombre,
+      orden: formData.orden,
+      ...(formData.rolProcesoId ? { rolProceso: { id: formData.rolProcesoId, nombre: '' } } : {})
+    };
+
     if (this.isEditMode && this.laneId) {
-      this.laneService.updateLane(this.laneId, formData).subscribe({
+      this.laneService.updateLane(this.laneId, payload).subscribe({
         next: () => {
           this.router.navigate(['/lanes'], { queryParams: { procesoId: this.procesoId } });
         },
@@ -105,12 +109,7 @@ export class LaneForm implements OnInit {
         }
       });
     } else {
-      const nuevoLane: LaneModel = {
-        ...formData,
-        procesoId: this.procesoId
-      };
-      
-      this.laneService.crearLane(nuevoLane).subscribe({
+      this.laneService.crearLane({ ...payload, proceso: { id: this.procesoId!, nombre: '' } }).subscribe({
         next: () => {
           this.router.navigate(['/lanes'], { queryParams: { procesoId: this.procesoId } });
         },

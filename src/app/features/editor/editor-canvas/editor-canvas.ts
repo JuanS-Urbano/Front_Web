@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import { DragDropModule, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { Actividad } from '../../../models/actividad';
 import { Gateway } from '../../../models/gateway';
@@ -27,19 +27,24 @@ export class EditorCanvas implements AfterViewInit {
   @ViewChild('canvasBoundary') canvasBoundary!: ElementRef;
 
   selectedElementId: string | null = null;
+  private wasDragging = false;
 
-  ngAfterViewInit(): void {
-    // Canvas is ready
+  ngAfterViewInit(): void {}
+
+  onDragStarted(_event: CdkDragStart): void {
+    this.wasDragging = true;
   }
 
   selectActividad(actividad: Actividad, event: MouseEvent): void {
     event.stopPropagation();
+    if (this.wasDragging) return;
     this.selectedElementId = `act-${actividad.id}`;
     this.elementSelected.emit({ type: 'ACTIVIDAD', data: actividad });
   }
 
   selectGateway(gateway: Gateway, event: MouseEvent): void {
     event.stopPropagation();
+    if (this.wasDragging) return;
     this.selectedElementId = `gat-${gateway.id}`;
     this.elementSelected.emit({ type: 'GATEWAY', data: gateway });
   }
@@ -51,14 +56,11 @@ export class EditorCanvas implements AfterViewInit {
 
   onDragEnd(event: CdkDragEnd, element: Actividad | Gateway): void {
     const transform = event.source.getFreeDragPosition();
-    // Update model coordinates
     element.posicionX += transform.x;
     element.posicionY += transform.y;
-    
-    // Reset transform so standard layout relies on top/left
     event.source.reset();
-    
     this.nodeMoved.emit();
+    setTimeout(() => { this.wasDragging = false; }, 0);
   }
 
   // Helper to draw lines

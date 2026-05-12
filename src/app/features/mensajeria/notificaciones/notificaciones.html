@@ -14,10 +14,22 @@
         <form [formGroup]="notificacionForm" (ngSubmit)="onSubmit()" class="noti-form">
           
           <div class="form-group">
-            <label for="destino">Destinatario (Email)</label>
-            <input type="email" id="destino" formControlName="destino" class="form-control" placeholder="ejemplo@correo.com">
+            <label for="destino">
+              @if (tipoSeleccionado === 'EMAIL') { Destinatario (Email) } @else { URL del Webhook }
+            </label>
+            <input
+              [type]="tipoSeleccionado === 'EMAIL' ? 'email' : 'url'"
+              id="destino"
+              formControlName="destino"
+              class="form-control"
+              [placeholder]="tipoSeleccionado === 'EMAIL' ? 'ejemplo@correo.com' : 'https://mi-servidor.com/hook'"
+            >
             @if (notificacionForm.get('destino')?.invalid && notificacionForm.get('destino')?.touched) {
-              <span class="error-text">Email válido es requerido</span>
+              @if (tipoSeleccionado === 'EMAIL') {
+                <span class="error-text">Email válido es requerido</span>
+              } @else {
+                <span class="error-text">La URL del webhook es requerida</span>
+              }
             }
           </div>
 
@@ -35,6 +47,14 @@
             @if (notificacionForm.get('contenido')?.invalid && notificacionForm.get('contenido')?.touched) {
               <span class="error-text">El cuerpo del mensaje es requerido</span>
             }
+          </div>
+
+          <div class="form-group">
+            <label for="tipo">Tipo de Notificación</label>
+            <select id="tipo" formControlName="tipo" class="form-control tipo-select">
+              <option value="EMAIL">Email</option>
+              <option value="WEBHOOK">Webhook</option>
+            </select>
           </div>
 
           <div class="form-actions">

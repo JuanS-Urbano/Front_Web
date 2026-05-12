@@ -1,11 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Session } from '../../core/services/session';
 import { Proceso as ProcesoService } from '../../services/proceso';
 import { Usuario as UsuarioService } from '../../services/usuario';
 import { RolProceso as RolProcesoService } from '../../services/rol-proceso';
-import { DestroyRef, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,59 +35,34 @@ export class Dashboard implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Suscripción al BehaviorSubject de SessionService con auto-cleanup
+    // Suscripción al BehaviorSubject de SessionService con auto-cleanup.
+    // Encadenamos forkJoin con switchMap para que takeUntilDestroyed cubra todo el flujo.
     this.sessionService.session$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((session) => {
-        if (session) {
+      .pipe(
+        switchMap((session) => {
+          if (!session) return of(null);
+
           this.userEmail = session.email;
           this.empresaNombre = session.empresa?.nombre ?? '';
           this.userRole = session.rolSistema;
-          
-          // Cargar datos reales
-          this.cargarDatos();
-        }
-      });
-  }
 
-  private cargarDatos(): void {
-    const empresaId = this.sessionService.getEmpresaId();
-    const poolId = empresaId ?? 1; // Fallback a 1
+          const empresaIdOriginal = this.sessionService.getEmpresaId();
+          const empresaIdFallback = empresaIdOriginal ?? 1;
+          const poolId = this.sessionService.getPoolId() ?? empresaIdFallback;
 
-    // Cargar procesos
-    this.procesoService.getProcesos(poolId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.totalProcesos = response.data.length;
-        },
-        error: (err) => {
-          console.error('Error cargando procesos:', err);
-        }
-      });
-
-    // Cargar usuarios
-    this.usuarioService.getUsuariosPorEmpresa(poolId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.totalUsuarios = response.data.length;
-        },
-        error: (err) => {
-          console.error('Error cargando usuarios:', err);
-        }
-      });
-
-    // Cargar roles
-    this.rolProcesoService.getRoles(poolId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
-          this.totalRoles = response.data.length;
-        },
-        error: (err) => {
-          console.error('Error cargando roles:', err);
-        }
+          return forkJoin({
+            procesos: this.procesoService.getProcesos(poolId).pipe(catchError(() => of({ data: [] as any[] } as any))),
+            usuarios: this.usuarioService.getUsuariosPorEmpresa(empresaIdFallback).pipe(catchError(() => of({ data: [] as any[] } as any))),
+            roles: this.rolProcesoService.getRoles(poolId).pipe(catchError(() => of({ data: [] as any[] } as any))),
+          });
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((res) => {
+        if (!res) return;
+        this.totalProcesos = res.procesos.data?.length ?? 0;
+        this.totalUsuarios = res.usuarios.data?.length ?? 0;
+        this.totalRoles = res.roles.data?.length ?? 0;
       });
   }
 }

@@ -6,9 +6,9 @@
     </div>
   </div>
 
-  <!-- HU-28: Correlación de mensajes -->
+  <!-- CU-28: Correlación de mensajes -->
   <div class="correlacion-panel">
-    <h3>Correlacionar Mensajes (HU-28)</h3>
+    <h3>Correlacionar Mensajes</h3>
     <p class="panel-hint">Ingresa una clave de correlación para vincular un mensaje Throw con su Message Catch correspondiente.</p>
     <div class="correlacion-row">
       <input
@@ -74,6 +74,7 @@
           <tr>
             <th>NOMBRE</th>
             <th>TIPO</th>
+            <th>ESTADO</th>
             <th>PROCESO ORIGEN</th>
             <th>PROCESO DESTINO</th>
           </tr>
@@ -87,12 +88,20 @@
                 </div>
               </td>
               <td>
-                <span class="status-badge" [class.status-throw]="mensaje.estado === 'THROW'" [class.status-catch]="mensaje.estado === 'CATCH'">
-                  {{ mensaje.estado }}
+                <span class="status-badge" [class.status-throw]="mensaje.tipo === 'THROW'" [class.status-catch]="mensaje.tipo === 'CATCH'">
+                  {{ mensaje.tipo }}
                 </span>
               </td>
-              <td class="cell-secondary">{{ mensaje.procesoOrigenId }}</td>
-              <td class="cell-secondary">{{ mensaje.procesoDestinoId }}</td>
+              <td>
+                <span class="estado-badge"
+                  [class.estado-pendiente]="mensaje.estado === 'PENDIENTE'"
+                  [class.estado-entregado]="mensaje.estado === 'ENTREGADO'"
+                  [class.estado-fallido]="mensaje.estado === 'FALLIDO'">
+                  {{ mensaje.estado ?? 'PENDIENTE' }}
+                </span>
+              </td>
+              <td class="cell-secondary">{{ mensaje.proceso?.nombre ?? '—' }}</td>
+              <td class="cell-secondary">{{ mensaje.procesoDestino?.nombre ?? '—' }}</td>
             </tr>
           }
         </tbody>

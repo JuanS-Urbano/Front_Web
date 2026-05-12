@@ -8,7 +8,7 @@ describe('PropiedadesActividad', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PropiedadesActividad],
+      imports: [PropiedadesActividad]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PropiedadesActividad);

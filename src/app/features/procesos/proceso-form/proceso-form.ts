@@ -74,13 +74,18 @@ export class ProcesoForm implements OnInit {
     this.errorMessage = '';
 
     const formData = this.procesoForm.value;
+    const poolId = this.sessionService.getPoolId() ?? this.sessionService.getEmpresaId() ?? 1;
+    const datosProceso = {
+      ...formData,
+      pool: { id: poolId }
+    };
 
     if (this.isEditMode && this.procesoId) {
-      this.procesoService.updateProceso(this.procesoId, formData).subscribe({
+      this.procesoService.updateProceso(this.procesoId, datosProceso).subscribe({
         next: () => {
           this.loading = false;
           this.toastService.mostrarExito('Proceso actualizado correctamente');
-          setTimeout(() => this.router.navigate(['/procesos']), 1000);
+          this.router.navigate(['/procesos']);
         },
         error: (err) => {
           this.loading = false;
@@ -89,17 +94,11 @@ export class ProcesoForm implements OnInit {
         }
       });
     } else {
-      const poolId = this.sessionService.getPoolId() ?? this.sessionService.getEmpresaId() ?? 1;
-      const nuevoProceso = {
-        ...formData,
-        pool: { id: poolId }
-      };
-
-      this.procesoService.crearProceso(nuevoProceso).subscribe({
+      this.procesoService.crearProceso(datosProceso).subscribe({
         next: () => {
           this.loading = false;
           this.toastService.mostrarExito('Proceso creado correctamente');
-          setTimeout(() => this.router.navigate(['/procesos']), 1000);
+          this.router.navigate(['/procesos']);
         },
         error: (err) => {
           this.loading = false;

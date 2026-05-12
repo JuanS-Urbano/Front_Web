@@ -91,9 +91,10 @@ export class RolForm implements OnInit {
       });
     } else {
       const empresaId = this.sessionService.getEmpresaId() ?? 0;
+      const empresaNombre = this.sessionService.getEmpresaNombre() ?? '';
       const nuevoRol: RolModel = {
         ...formData,
-        empresaId
+        empresa: { id: empresaId, nombre: empresaNombre }
       };
 
       this.rolService.crearRol(nuevoRol).subscribe({

@@ -184,3 +184,21 @@
   border-top: 1px dashed var(--color-border);
   margin: 1rem;
 }
+
+.btn-delete-element {
+  display: block;
+  width: calc(100% - 2rem);
+  margin: 0.75rem 1rem;
+  padding: 0.5rem;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: var(--radius-md);
+  color: #b91c1c;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+.btn-delete-element:hover {
+  background: #fecaca;
+}

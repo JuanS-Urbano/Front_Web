@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject, ChangeDetectorRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { forkJoin, Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { ToastService } from '../../../core/services/toast.service';
 import { Proceso as ProcesoService } from '../../../services/proceso';
 import { Actividad as ActividadService } from '../../../services/actividad';
@@ -31,7 +32,7 @@ import { Lane as LaneService } from '../../../services/lane';
 @Component({
   selector: 'app-proceso-detail',
   imports: [
-    CommonModule, RouterLink, LoadingSpinner, 
+    CommonModule, RouterLink, LoadingSpinner,
     EditorCanvas, Toolbar, PropiedadesActividad, PropiedadesGateway, PropiedadesArco, LanesManager, Historial, PoolConfig
   ],
   templateUrl: './proceso-detail.html',
@@ -53,6 +54,8 @@ export class ProcesoDetail implements OnInit {
   
   selectedElement: EditorElement | null = null;
 
+  private destroyRef = inject(DestroyRef);
+
   // Counters for mock IDs (since backend creates real IDs, we use negative for new un-saved elements)
   private nextId = -1;
 
@@ -63,17 +66,20 @@ export class ProcesoDetail implements OnInit {
     private actividadService: ActividadService,
     private gatewayService: GatewayService,
     private arcoService: ArcoService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const idStr = params.get('id');
-      if (idStr) {
-        this.procesoId = +idStr;
-        this.cargarProceso(this.procesoId);
-      }
-    });
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        const idStr = params.get('id');
+        if (idStr) {
+          this.procesoId = +idStr;
+          this.cargarProceso(this.procesoId);
+        }
+      });
   }
 
   cargarProceso(id: number): void {
@@ -81,12 +87,13 @@ export class ProcesoDetail implements OnInit {
     this.procesoService.getProcesoById(id).subscribe({
       next: (response) => {
         this.proceso = response.data;
-        this.loading = false;
+        // Lanzar carga del diagrama, cdr se actualizará al final
         this.cargarDiagrama(id);
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Error al cargar el proceso';
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -114,7 +121,7 @@ export class ProcesoDetail implements OnInit {
       this.gatewayService.getGateways(id).pipe(catchError(() => of(empty))),
       this.arcoService.getArcos(id).pipe(catchError(() => of(empty))),
       this.laneService.getLanes(id).pipe(catchError(() => of(empty)))
-    ]).subscribe({
+    ]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ([actRes, gwRes, arcoRes, laneRes]) => {
         this.actividades = (actRes.data ?? []).map((a: any) => ({
           id: a.id,
@@ -141,6 +148,15 @@ export class ProcesoDetail implements OnInit {
           procesoId: a.proceso?.id ?? id,
         }));
         this.lanes = (laneRes.data ?? []).sort((a: any, b: any) => (a.orden ?? 0) - (b.orden ?? 0));
+        
+        // Todo listo, quitamos loading y forzamos renderizado en Zoneless
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.errorMessage = 'Error al cargar los elementos del diagrama';
+        this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -221,45 +237,114 @@ export class ProcesoDetail implements OnInit {
   }
 
   onSaveDiagram(): void {
-    const peticiones: Observable<any>[] = [];
+    // idMap: temporary frontend negative ID → real backend ID
+    const idMap = new Map<number, number>();
 
-    this.actividades.forEach(act => {
-      if (act.id < 0) {
-        peticiones.push(this.actividadService.crearActividad(this.toActividadDTO(act)));
-      } else if (act.id > 0) {
-        peticiones.push(this.actividadService.updateActividad(act.id, this.toActividadDTO(act)));
-      }
-    });
+    const newActs$ = this.actividades
+      .filter(a => a.id < 0)
+      .map(act => this.actividadService.crearActividad(this.toActividadDTO(act)).pipe(
+        tap((res: any) => { if (res.data?.id) idMap.set(act.id, res.data.id); })
+      ));
 
-    this.gateways.forEach(gw => {
-      if (gw.id < 0) {
-        peticiones.push(this.gatewayService.crearGateway(this.toGatewayDTO(gw)));
-      } else if (gw.id > 0) {
-        peticiones.push(this.gatewayService.updateGateway(gw.id, this.toGatewayDTO(gw)));
-      }
-    });
+    const newGws$ = this.gateways
+      .filter(g => g.id < 0)
+      .map(gw => this.gatewayService.crearGateway(this.toGatewayDTO(gw)).pipe(
+        tap((res: any) => { if (res.data?.id) idMap.set(gw.id, res.data.id); })
+      ));
 
-    this.arcos.forEach(arco => {
-      if (arco.id < 0) {
-        peticiones.push(this.arcoService.crearArco(this.toArcoDTO(arco)));
-      } else if (arco.id > 0) {
-        peticiones.push(this.arcoService.updateArco(arco.id, this.toArcoDTO(arco)));
-      }
-    });
+    const updateActs$ = this.actividades
+      .filter(a => a.id > 0)
+      .map(act => this.actividadService.updateActividad(act.id, this.toActividadDTO(act)));
 
-    if (peticiones.length > 0) {
-      forkJoin(peticiones).subscribe({
-        next: () => {
-          this.toastService.mostrarExito('Diagrama guardado correctamente');
-          if (this.procesoId) {
-            this.cargarDiagrama(this.procesoId);
-          }
-        },
-        error: () => this.toastService.mostrarError('Error al guardar el diagrama')
-      });
-    } else {
+    const updateGws$ = this.gateways
+      .filter(g => g.id > 0)
+      .map(gw => this.gatewayService.updateGateway(gw.id, this.toGatewayDTO(gw)));
+
+    const creates$ = [...newActs$, ...newGws$];
+    const updates$ = [...updateActs$, ...updateGws$];
+    const arcosPendientes = this.arcos.filter(a => a.id !== 0);
+
+    const totalOps = creates$.length + updates$.length + arcosPendientes.length;
+    if (totalOps === 0) {
       this.toastService.mostrarInfo('No hay cambios pendientes de guardar');
+      return;
     }
+
+    const fase1$ = creates$.length > 0 ? forkJoin(creates$) : of([]);
+    const fase2$ = updates$.length > 0 ? forkJoin(updates$) : of([]);
+
+    // Fase 1 (crear nuevos para poblar idMap) → Fase 2 (actualizar existentes) → Fase 3 (arcos con IDs reales)
+    fase1$.pipe(
+      switchMap(() => fase2$),
+      switchMap(() => {
+        const arcoOps = arcosPendientes.map(arco => {
+          const realOrigenId = idMap.get(arco.origenId) ?? arco.origenId;
+          const realDestinoId = idMap.get(arco.destinoId) ?? arco.destinoId;
+          const dto = this.toArcoDTO({ ...arco, origenId: realOrigenId, destinoId: realDestinoId });
+          return arco.id < 0
+            ? this.arcoService.crearArco(dto)
+            : this.arcoService.updateArco(arco.id, dto);
+        });
+        return arcoOps.length > 0 ? forkJoin(arcoOps) : of([]);
+      })
+    ).subscribe({
+      next: () => {
+        this.toastService.mostrarExito('Diagrama guardado correctamente');
+        if (this.procesoId) this.cargarDiagrama(this.procesoId);
+      },
+      error: () => this.toastService.mostrarError('Error al guardar el diagrama')
+    });
+  }
+
+  onDeleteSelectedElement(): void {
+    if (!this.selectedElement) return;
+    const el = this.selectedElement;
+
+    if (el.type === 'ACTIVIDAD') {
+      const act = el.data as Actividad;
+      if (act.id < 0) {
+        this.actividades = this.actividades.filter(a => a.id !== act.id);
+        this.arcos = this.arcos.filter(a => a.origenId !== act.id && a.destinoId !== act.id);
+      } else {
+        this.actividadService.deleteActividad(act.id).subscribe({
+          next: () => {
+            this.actividades = this.actividades.filter(a => a.id !== act.id);
+            this.arcos = this.arcos.filter(a => a.origenId !== act.id && a.destinoId !== act.id);
+            this.toastService.mostrarExito('Actividad eliminada');
+          },
+          error: () => this.toastService.mostrarError('Error al eliminar la actividad')
+        });
+      }
+    } else if (el.type === 'GATEWAY') {
+      const gw = el.data as Gateway;
+      if (gw.id < 0) {
+        this.gateways = this.gateways.filter(g => g.id !== gw.id);
+        this.arcos = this.arcos.filter(a => a.origenId !== gw.id && a.destinoId !== gw.id);
+      } else {
+        this.gatewayService.deleteGateway(gw.id).subscribe({
+          next: () => {
+            this.gateways = this.gateways.filter(g => g.id !== gw.id);
+            this.arcos = this.arcos.filter(a => a.origenId !== gw.id && a.destinoId !== gw.id);
+            this.toastService.mostrarExito('Gateway eliminado');
+          },
+          error: () => this.toastService.mostrarError('Error al eliminar el gateway')
+        });
+      }
+    } else if (el.type === 'ARCO') {
+      const arco = el.data as Arco;
+      if (arco.id < 0) {
+        this.arcos = this.arcos.filter(a => a.id !== arco.id);
+      } else {
+        this.arcoService.deleteArco(arco.id).subscribe({
+          next: () => {
+            this.arcos = this.arcos.filter(a => a.id !== arco.id);
+            this.toastService.mostrarExito('Arco eliminado');
+          },
+          error: () => this.toastService.mostrarError('Error al eliminar el arco')
+        });
+      }
+    }
+    this.selectedElement = null;
   }
 
   // --- Canvas Handlers ---

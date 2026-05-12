@@ -17,10 +17,10 @@ import { LoadingSpinner } from '../../../shared/components/loading-spinner/loadi
 export class Notificaciones implements OnInit {
   notificacionForm: FormGroup;
   notificaciones: NotificacionResponse[] = [];
-  
+
   loadingForm = false;
   loadingList = true;
-  
+
   errorForm: string | null = null;
   errorList: string | null = null;
   exitoForm: string | null = null;
@@ -32,7 +32,7 @@ export class Notificaciones implements OnInit {
   constructor() {
     const empresaId = this.sessionService.getEmpresaId() ?? 1;
     this.notificacionForm = this.fb.group({
-      destino: ['', [Validators.required, Validators.email]],
+      destino: ['', [Validators.required]],
       asunto: ['', Validators.required],
       contenido: ['', Validators.required],
       tipo: ['EMAIL', Validators.required],
@@ -42,12 +42,28 @@ export class Notificaciones implements OnInit {
 
   ngOnInit(): void {
     this.cargarHistorial();
+
+    // Cambiar validación del campo "destino" según el tipo de notificación
+    this.notificacionForm.get('tipo')?.valueChanges.subscribe((tipo: string) => {
+      const destinoCtrl = this.notificacionForm.get('destino');
+      if (tipo === 'EMAIL') {
+        destinoCtrl?.setValidators([Validators.required, Validators.email]);
+      } else {
+        // WEBHOOK: solo requerir que no esté vacío (acepta URLs)
+        destinoCtrl?.setValidators([Validators.required]);
+      }
+      destinoCtrl?.updateValueAndValidity();
+    });
+  }
+
+  get tipoSeleccionado(): string {
+    return this.notificacionForm.get('tipo')?.value ?? 'EMAIL';
   }
 
   cargarHistorial(): void {
     this.loadingList = true;
     this.errorList = null;
-    
+
     this.notificacionService.getNotificaciones().subscribe({
       next: (response) => {
         this.notificaciones = response.data || [];
@@ -77,13 +93,13 @@ export class Notificaciones implements OnInit {
       next: () => {
         this.exitoForm = 'Notificación enviada exitosamente.';
         this.loadingForm = false;
-        
+
         // Reset form, preserving hidden or default fields
         this.notificacionForm.reset({
           tipo: 'EMAIL',
           procesoId: request.procesoId
         });
-        
+
         // Refresh table
         this.cargarHistorial();
       },

@@ -8,7 +8,7 @@ describe('PropiedadesArco', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PropiedadesArco],
+      imports: [PropiedadesArco]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PropiedadesArco);

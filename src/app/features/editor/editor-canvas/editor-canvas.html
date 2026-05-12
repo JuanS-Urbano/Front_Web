@@ -46,8 +46,9 @@
         [class.selected]="selectedElementId === 'act-' + act.id"
         [style.left.px]="act.posicionX" 
         [style.top.px]="act.posicionY"
-        cdkDrag 
+        cdkDrag
         cdkDragBoundary=".canvas-container"
+        (cdkDragStarted)="onDragStarted($event)"
         (cdkDragEnded)="onDragEnd($event, act)"
         (click)="selectActividad(act, $event)">
         <div class="node-content">
@@ -64,8 +65,9 @@
         [class.selected]="selectedElementId === 'gat-' + gat.id"
         [style.left.px]="gat.posicionX" 
         [style.top.px]="gat.posicionY"
-        cdkDrag 
+        cdkDrag
         cdkDragBoundary=".canvas-container"
+        (cdkDragStarted)="onDragStarted($event)"
         (cdkDragEnded)="onDragEnd($event, gat)"
         (click)="selectGateway(gat, $event)">
         <div class="gateway-diamond"></div>

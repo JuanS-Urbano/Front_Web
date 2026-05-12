@@ -5,6 +5,7 @@ import { Proceso as ProcesoModel } from '../../../models/proceso';
 import { Session } from '../../../core/services/session';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { take } from 'rxjs/operators';
 import { SearchBar } from '../../../shared/components/search-bar/search-bar';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
@@ -49,17 +50,19 @@ export class ProcesosList implements OnInit {
   cargarProcesos(): void {
     this.loading = true;
     const poolId = this.sessionService.getPoolId() ?? this.sessionService.getEmpresaId() ?? 1;
-    this.procesoService.getProcesos(poolId).subscribe({
-      next: (response) => {
-        this.procesos = response.data ?? [];
-        this.procesosFiltrados = [...this.procesos];
-        this.loading = false;
-      },
-      error: (err) => {
-        this.toastService.mostrarError(err.error?.message || 'Error al cargar los procesos');
-        this.loading = false;
-      }
-    });
+    this.procesoService.getProcesos(poolId)
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => {
+          this.procesos = response.data ?? [];
+          this.procesosFiltrados = [...this.procesos];
+          this.loading = false;
+        },
+        error: (err) => {
+          this.toastService.mostrarError(err.error?.message || 'Error al cargar los procesos');
+          this.loading = false;
+        }
+      });
   }
 
   onSearch(termino: string): void {

@@ -1,6 +1,8 @@
+import { Referencia } from './referencia';
+
 export interface RolProceso {
-  id: number;
+  id?: number;
   nombre: string;
   descripcion: string;
-  empresaId: number;
+  empresa?: Referencia;
 }

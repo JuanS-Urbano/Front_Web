@@ -28,12 +28,12 @@
             <span class="lane-orden">#{{ lane.orden }}</span>
             <div>
               <div class="lane-nombre">{{ lane.nombre }}</div>
-              <div class="lane-rol">Rol ID: {{ lane.rolProcesoId }}</div>
+              <div class="lane-rol">Rol: {{ lane.rolProceso?.nombre ?? '—' }}</div>
             </div>
           </div>
           <div class="lane-actions">
             <a [routerLink]="['/lanes', lane.id, 'editar']" [queryParams]="{ procesoId: procesoId }" class="btn-icon">✏️</a>
-            <button (click)="prepararEliminacion(lane.id)" class="btn-icon btn-danger-text">🗑️</button>
+            <button (click)="prepararEliminacion(lane.id!)" class="btn-icon btn-danger-text">🗑️</button>
           </div>
         </li>
       }
