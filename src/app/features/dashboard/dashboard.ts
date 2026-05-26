@@ -1,16 +1,16 @@
 import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { forkJoin, of } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Session } from '../../core/services/session';
-import { Proceso as ProcesoService } from '../../services/proceso';
-import { Usuario as UsuarioService } from '../../services/usuario';
-import { RolProceso as RolProcesoService } from '../../services/rol-proceso';
+import { Metricas as MetricasService } from '../../services';
+import { Metricas as MetricasModel } from '../../models';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -20,23 +20,21 @@ export class Dashboard implements OnInit {
   empresaNombre = '';
   userRole = '';
 
-  // Display-only counts
+  metricas: MetricasModel | null = null;
+
   totalProcesos = 0;
   totalUsuarios = 0;
   totalRoles = 0;
+  totalActividades = 0;
 
   private destroyRef = inject(DestroyRef);
 
   constructor(
     private sessionService: Session,
-    private procesoService: ProcesoService,
-    private usuarioService: UsuarioService,
-    private rolProcesoService: RolProcesoService
+    private metricasService: MetricasService
   ) {}
 
   ngOnInit(): void {
-    // Suscripción al BehaviorSubject de SessionService con auto-cleanup.
-    // Encadenamos forkJoin con switchMap para que takeUntilDestroyed cubra todo el flujo.
     this.sessionService.session$
       .pipe(
         switchMap((session) => {
@@ -46,23 +44,24 @@ export class Dashboard implements OnInit {
           this.empresaNombre = session.empresa?.nombre ?? '';
           this.userRole = session.rolSistema;
 
-          const empresaIdOriginal = this.sessionService.getEmpresaId();
-          const empresaIdFallback = empresaIdOriginal ?? 1;
-          const poolId = this.sessionService.getPoolId() ?? empresaIdFallback;
+          const empresaId = this.sessionService.getEmpresaId() ?? 1;
 
-          return forkJoin({
-            procesos: this.procesoService.getProcesos(poolId).pipe(catchError(() => of({ data: [] as any[] } as any))),
-            usuarios: this.usuarioService.getUsuariosPorEmpresa(empresaIdFallback).pipe(catchError(() => of({ data: [] as any[] } as any))),
-            roles: this.rolProcesoService.getRoles(poolId).pipe(catchError(() => of({ data: [] as any[] } as any))),
-          });
+          return this.metricasService.getMetricasPorEmpresa(empresaId).pipe(
+            catchError((err) => {
+              console.error('Error al obtener métricas:', err);
+              return of(null);
+            })
+          );
         }),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((res) => {
-        if (!res) return;
-        this.totalProcesos = res.procesos.data?.length ?? 0;
-        this.totalUsuarios = res.usuarios.data?.length ?? 0;
-        this.totalRoles = res.roles.data?.length ?? 0;
+        if (!res || !res.data) return;
+        this.metricas = res.data;
+        this.totalProcesos = this.metricas.totalProcesos;
+        this.totalUsuarios = this.metricas.totalUsuarios;
+        this.totalRoles = this.metricas.totalRolesProceso;
+        this.totalActividades = this.metricas.totalActividades;
       });
   }
 }

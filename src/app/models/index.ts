@@ -17,3 +17,4 @@ export type { NotificacionRequest } from './notificacion-request';
 export type { NotificacionResponse } from './notificacion-response';
 export type { CorrelacionResult } from './correlacion-result';
 export type { Referencia } from './referencia';
+export type { Metricas, HistorialCambiosDTO } from './metricas';

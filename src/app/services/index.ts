@@ -10,3 +10,4 @@ export { Lane } from './lane';
 export { RolProceso } from './rol-proceso';
 export { Mensaje } from './mensaje';
 export { Notificacion } from './notificacion';
+export { Metricas } from './metricas';
