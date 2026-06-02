@@ -1,0 +1,6 @@
+📌 Selenium test starting
+📌 Opening login page
+📌 Found email input
+📌 Submitted form
+📌 Waiting for dashboard URL
+📌 Closing browser

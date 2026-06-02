@@ -1,0 +1,16 @@
+[2026-06-01T21:39:43.739Z] ℹ️: Selenium test iniciando
+[2026-06-01T21:39:43.741Z] ℹ️: Backend en: http://localhost:4020
+[2026-06-01T21:39:43.742Z] ℹ️: Frontend en: http://localhost:4200
+[2026-06-01T21:39:43.742Z] ℹ️: Credenciales: admin@techcorp.com / 900111222-3
+[2026-06-01T21:39:45.091Z] ℹ️: Abriendo página de login
+[2026-06-01T21:39:46.509Z] ✅: Página de login cargada
+[2026-06-01T21:39:46.515Z] ℹ️: Buscando campos de formulario
+[2026-06-01T21:39:47.069Z] ✅: Campos encontrados: email, password, submit button
+[2026-06-01T21:39:47.070Z] ℹ️: Ingresando credenciales: admin@techcorp.com
+[2026-06-01T21:39:47.741Z] ✅: Credenciales ingresadas
+[2026-06-01T21:39:47.742Z] ℹ️: Haciendo submit del formulario
+[2026-06-01T21:39:47.944Z] ✅: Formulario enviado
+[2026-06-01T21:39:47.945Z] ℹ️: Esperando redirección al dashboard...
+[2026-06-01T21:39:48.524Z] ✅: Redirección exitosa a: http://localhost:4200/dashboard
+[2026-06-01T21:39:48.524Z] ✅: PRUEBA COMPLETADA: Login exitoso
+[2026-06-01T21:39:48.525Z] ℹ️: Cerrando navegador
