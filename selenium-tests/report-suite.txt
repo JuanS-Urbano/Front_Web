@@ -1,0 +1,10 @@
+Suite de Tests Selenium — 3/6/2026, 10:30:30 p. m.
+════════════════════════════════════════════════════════
+RESULTADOS:
+  ✅ Login                     PASS   2.8s
+  ✅ Dashboard                 PASS   3s
+  ✅ Crear Proceso             PASS   11.8s
+  ✅ Crear Usuario             PASS   7.3s
+════════════════════════════════════════════════════════
+
+Total: 4 tests | ✅ Pasaron: 4 | ❌ Fallaron: 0 | Tiempo: 34.0s

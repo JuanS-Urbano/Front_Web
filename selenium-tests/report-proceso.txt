@@ -1,0 +1,29 @@
+[2026-06-04T03:30:08.910Z] ℹ️: ══════════════════════════════════════════
+[2026-06-04T03:30:08.911Z] ℹ️:   TEST: Creación y Edición de Proceso
+[2026-06-04T03:30:08.911Z] ℹ️: ══════════════════════════════════════════
+[2026-06-04T03:30:08.911Z] ℹ️: Frontend: http://localhost:4200
+[2026-06-04T03:30:08.911Z] ℹ️: Nombre proceso: "Proceso Selenium 1780543808909"
+[2026-06-04T03:30:09.655Z] ℹ️: Paso 1: Login como admin
+[2026-06-04T03:30:09.656Z] ℹ️: Navegando a login: http://localhost:4200/auth/login
+[2026-06-04T03:30:11.191Z] ✅: Sesión iniciada como: admin@techcorp.com
+[2026-06-04T03:30:11.191Z] ℹ️: Paso 2: Navegando a /procesos/crear
+[2026-06-04T03:30:11.606Z] ✅: Formulario de creación visible: "Crear Nuevo Proceso"
+[2026-06-04T03:30:11.606Z] ℹ️: Paso 3: Verificando validaciones con formulario vacío
+[2026-06-04T03:30:11.622Z] ✅: Botón submit deshabilitado con formulario vacío (correcto)
+[2026-06-04T03:30:11.622Z] ℹ️: Paso 4: Rellenando formulario
+[2026-06-04T03:30:11.977Z] ✅: Formulario rellenado: nombre, descripción, categoría=Operaciones, estado=PUBLICADO
+[2026-06-04T03:30:11.977Z] ℹ️: Paso 5: Enviando formulario de creación
+[2026-06-04T03:30:12.058Z] ℹ️: Esperando respuesta del backend (hasta 20s)...
+[2026-06-04T03:30:12.312Z] ✅: Redirigido al listado: http://localhost:4200/procesos
+[2026-06-04T03:30:12.312Z] ℹ️: Paso 6: Verificando que el proceso aparece en la lista
+[2026-06-04T03:30:15.810Z] ✅: Proceso "Proceso Selenium 1780543808909" visible en la lista
+[2026-06-04T03:30:15.810Z] ℹ️: Paso 7: Navegando a edición del proceso creado
+[2026-06-04T03:30:15.838Z] ℹ️: Navegando a edición: http://localhost:4200/procesos/35/editar
+[2026-06-04T03:30:15.944Z] ✅: Formulario de edición cargado: "Editar Proceso"
+[2026-06-04T03:30:15.945Z] ℹ️: Paso 8: Modificando nombre y guardando
+[2026-06-04T03:30:16.342Z] ✅: Nombre actualizado en el campo: "Proceso Selenium Editado 1780543808909"
+[2026-06-04T03:30:16.524Z] ℹ️: Esperando respuesta del backend tras edición (hasta 20s)...
+[2026-06-04T03:30:16.779Z] ✅: Redirigido al listado tras edición: http://localhost:4200/procesos
+[2026-06-04T03:30:20.287Z] ✅: Proceso editado "Proceso Selenium Editado 1780543808909" visible en la lista
+[2026-06-04T03:30:20.287Z] ✅: ══ PRUEBA COMPLETADA: Creación y Edición de Proceso EXITOSO ══
+[2026-06-04T03:30:20.287Z] ℹ️: Cerrando navegador

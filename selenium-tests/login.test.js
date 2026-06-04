@@ -18,7 +18,7 @@ function logResult(status, message) {
 
 async function runLoginTest() {
   logResult('ℹ️', 'Selenium test iniciando');
-  logResult('ℹ️', `Backend en: http://localhost:4020`);
+  logResult('ℹ️', `Backend en: http://localhost:8080`);
   logResult('ℹ️', `Frontend en: http://localhost:4200`);
   logResult('ℹ️', `Credenciales: ${EMAIL} / ${PASSWORD}`);
   

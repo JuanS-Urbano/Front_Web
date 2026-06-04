@@ -7,6 +7,12 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:selenium": "node selenium-tests/run-all.js",
+    "test:login": "node selenium-tests/login.test.js",
+    "test:dashboard": "node selenium-tests/dashboard.test.js",
+    "test:registro": "node selenium-tests/registro-empresa.test.js",
+    "test:proceso": "node selenium-tests/proceso.test.js",
+    "test:usuario": "node selenium-tests/usuario.test.js",
     "serve:ssr:Front-proyecto": "node dist/Front-proyecto/server/server.mjs"
   },
   "private": true,

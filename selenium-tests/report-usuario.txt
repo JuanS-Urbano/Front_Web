@@ -1,0 +1,24 @@
+[2026-06-04T03:30:23.828Z] ℹ️: ══════════════════════════════════════════
+[2026-06-04T03:30:23.829Z] ℹ️:   TEST: Creación de Usuario
+[2026-06-04T03:30:23.829Z] ℹ️: ══════════════════════════════════════════
+[2026-06-04T03:30:23.829Z] ℹ️: Frontend: http://localhost:4200
+[2026-06-04T03:30:23.829Z] ℹ️: Email nuevo usuario: usuario.selenium.1780543823828@techcorp.com
+[2026-06-04T03:30:24.741Z] ℹ️: Paso 1: Login como admin
+[2026-06-04T03:30:24.741Z] ℹ️: Navegando a login: http://localhost:4200/auth/login
+[2026-06-04T03:30:25.993Z] ✅: Sesión iniciada como: admin@techcorp.com
+[2026-06-04T03:30:25.993Z] ℹ️: Paso 2: Navegando a /usuarios
+[2026-06-04T03:30:26.130Z] ✅: Página de usuarios cargada
+[2026-06-04T03:30:26.130Z] ℹ️: Paso 3: Buscando botón/enlace "Nuevo Usuario"
+[2026-06-04T03:30:26.348Z] ℹ️: Paso 4: Verificando formulario de creación de usuario
+[2026-06-04T03:30:26.423Z] ✅: Formulario visible: "Crear Usuario"
+[2026-06-04T03:30:26.423Z] ℹ️: Paso 5: Verificando validaciones con formulario vacío
+[2026-06-04T03:30:26.539Z] ✅: Validaciones presentes: 2 error(es)
+[2026-06-04T03:30:26.539Z] ℹ️: Paso 6: Rellenando formulario de usuario
+[2026-06-04T03:30:26.815Z] ✅: Formulario rellenado: usuario.selenium.1780543823828@techcorp.com
+[2026-06-04T03:30:26.815Z] ℹ️: Paso 7: Enviando formulario
+[2026-06-04T03:30:26.874Z] ℹ️: Esperando respuesta del backend (hasta 20s)...
+[2026-06-04T03:30:28.439Z] ✅: Redirigido al listado: http://localhost:4200/usuarios
+[2026-06-04T03:30:28.439Z] ℹ️: Paso 8: Verificando que el nuevo usuario aparece en la lista
+[2026-06-04T03:30:30.637Z] ✅: Usuario "usuario.selenium.1780543823828@techcorp.com" visible en la lista
+[2026-06-04T03:30:30.637Z] ✅: ══ PRUEBA COMPLETADA: Creación de Usuario EXITOSO ══
+[2026-06-04T03:30:30.637Z] ℹ️: Cerrando navegador

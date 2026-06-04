@@ -1,0 +1,27 @@
+[2026-06-04T03:30:02.951Z] ℹ️: ══════════════════════════════════════════
+[2026-06-04T03:30:02.953Z] ℹ️:   TEST: Dashboard y sus componentes
+[2026-06-04T03:30:02.953Z] ℹ️: ══════════════════════════════════════════
+[2026-06-04T03:30:02.953Z] ℹ️: Frontend: http://localhost:4200
+[2026-06-04T03:30:03.829Z] ℹ️: Paso 1: Login como admin
+[2026-06-04T03:30:03.830Z] ℹ️: Navegando a login: http://localhost:4200/auth/login
+[2026-06-04T03:30:05.207Z] ✅: Sesión iniciada como: admin@techcorp.com
+[2026-06-04T03:30:05.207Z] ℹ️: Paso 2: Verificando URL y título del dashboard
+[2026-06-04T03:30:05.217Z] ✅: URL correcta: http://localhost:4200/dashboard
+[2026-06-04T03:30:05.259Z] ✅: Título visible: "Dashboard"
+[2026-06-04T03:30:05.259Z] ℹ️: Paso 3: Verificando card Inicio Rápido
+[2026-06-04T03:30:05.296Z] ✅: Card "INICIO RÁPIDO" presente
+[2026-06-04T03:30:05.328Z] ✅: Botón "Lienzo en Blanco" apunta a /procesos/crear
+[2026-06-04T03:30:05.355Z] ✅: Botón "Ver Procesos" apunta a /procesos
+[2026-06-04T03:30:05.355Z] ℹ️: Paso 4: Verificando stat-card TOTAL PROCESOS
+[2026-06-04T03:30:05.403Z] ✅: TOTAL PROCESOS visible: 0
+[2026-06-04T03:30:05.403Z] ℹ️: Paso 5: Verificando tarjetas de estadísticas inferiores
+[2026-06-04T03:30:05.472Z] ✅: Tarjetas inferiores: USUARIOS ACTIVOS | ROLES BPMN | ELEMENTOS BPMN
+[2026-06-04T03:30:05.472Z] ✅: Todas las tarjetas de estadísticas presentes
+[2026-06-04T03:30:05.472Z] ℹ️: Paso 6: Verificando secciones de distribución
+[2026-06-04T03:30:05.482Z] ℹ️: Secciones de distribución no visibles (posiblemente sin datos aún)
+[2026-06-04T03:30:05.482Z] ℹ️: Paso 7: Verificando sección de Auditoría
+[2026-06-04T03:30:05.492Z] ℹ️: Sección de Auditoría no visible (sin métricas aún)
+[2026-06-04T03:30:05.492Z] ℹ️: Paso 8: Verificando existencia del sidebar/navbar
+[2026-06-04T03:30:05.503Z] ✅: Navegación presente con 7 enlaces detectados
+[2026-06-04T03:30:05.504Z] ✅: ══ PRUEBA COMPLETADA: Dashboard EXITOSO ══
+[2026-06-04T03:30:05.504Z] ℹ️: Cerrando navegador

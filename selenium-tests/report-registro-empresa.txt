@@ -1,0 +1,18 @@
+[2026-06-04T03:26:12.860Z] ℹ️: ══════════════════════════════════════════
+[2026-06-04T03:26:12.861Z] ℹ️:   TEST: Registro de Empresa
+[2026-06-04T03:26:12.861Z] ℹ️: ══════════════════════════════════════════
+[2026-06-04T03:26:12.861Z] ℹ️: Frontend: http://localhost:4200
+[2026-06-04T03:26:12.861Z] ℹ️: NIT generado: 543572861-3
+[2026-06-04T03:26:12.861Z] ℹ️: Nombre: Empresa Selenium 1780543572861
+[2026-06-04T03:26:12.861Z] ℹ️: Correo: selenium.1780543572861@test-empresa.com
+[2026-06-04T03:26:13.813Z] ℹ️: Paso 1: Navegando a /auth/registro
+[2026-06-04T03:26:14.413Z] ✅: Página cargada correctamente: "Registrar Empresa"
+[2026-06-04T03:26:14.413Z] ℹ️: Paso 2: Verificando validaciones con formulario vacío
+[2026-06-04T03:26:14.556Z] ✅: Validaciones activas: 3 mensaje(s) de error visibles
+[2026-06-04T03:26:14.556Z] ℹ️: Paso 3: Rellenando el formulario de registro
+[2026-06-04T03:26:15.021Z] ✅: Formulario rellenado
+[2026-06-04T03:26:15.021Z] ℹ️: Paso 4: Enviando formulario
+[2026-06-04T03:26:15.092Z] ℹ️: Esperando bloque de credenciales (puede tardar hasta 35s)...
+[2026-06-04T03:26:50.218Z] ❌: Error: Timeout esperando respuesta. Error visible: "ninguno"
+[2026-06-04T03:26:50.219Z] ❌: ══ PRUEBA FALLIDA: Registro de Empresa ══
+[2026-06-04T03:26:50.219Z] ℹ️: Cerrando navegador
